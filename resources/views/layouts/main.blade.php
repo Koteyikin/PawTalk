@@ -8,12 +8,12 @@
     <title>@yield('title')</title>
     @vite('resources/css/app.css')
 </head>
-<body class="color-baw min-h-screen bg-cover bg-center bg-no-repeat" style="background-image: url('{{ asset('img/back.jpg') }}')"  >
+<body class="color-baw min-h-screen bg-cover bg-center bg-no-repeat">
         @include('partials.navbar')
-    <div class="container mx-auto px-4">
+{{--    <div class="container mx-auto px-4">--}}
 
         @yield('body')
-    </div>
+{{--    </div>--}}
 
 </body>
 </html>
