@@ -1,0 +1,22 @@
+            table->id();
+            $table->string('full_name');
+            $table->date('birthday');
+            $table->enum('gender', ['Мужской', 'Женский', 'Неизвестно']);
+            $table->text('city');
+            $table->text('avatar');
+            $table->text('description');
+            $table->foreignIdFor(\App\Models\key_user::class)->constrained();
+            $table->foreignIdFor(\App\Models\Animal::class)->constrained();
+            $table->timestamps();
+
+            $table->id();
+            $table->text('nickname');
+            $table->text('email');
+            $table->text('password')->nullable();
+            $table->timestamps();
+
+            $table->id();
+            $table->string('name');
+            $table->integer('age');
+            $table->text('picture');
+            $table->timestamps();
