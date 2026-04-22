@@ -10,22 +10,33 @@ class AboutUser extends Model
         'name',
         'surname',
         'contact',
-        'gender',
-        'status',
         'interests',
         'avatar',
         'city',
         'description',
+        'status_id',
+        'gender_id',
         'user_id',
-        'animal_id'
+//        'animal_id'
     ];
 
     public function user()
     {
         return $this->belongsTo('App\Models\User');
     }
+
     public function animal()
     {
         return $this->belongsTo('App\Models\Animal');
+    }
+
+    public function gender()
+    {
+        return $this->belongsTo('App\Models\Gender');
+    }
+
+    public function status()
+    {
+        return $this->belongsTo('App\Models\Status');
     }
 }

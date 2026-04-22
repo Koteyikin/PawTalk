@@ -17,11 +17,12 @@ return new class extends Migration
             $table->string('surname');
             $table->string('contact');
             $table->enum('gender', ['Мужской', 'Женский', 'Неизвестно']);
-            $table->enum('status', ['Писатель', 'Читатель',])->default('Писатель');
             $table->string('interests');
             $table->text('city');
             $table->text('avatar');
             $table->text('description');
+            $table->foreignIdFor(\App\Models\Status::class)->constrained();
+            $table->foreignIdFor(\App\Models\Gender::class)->constrained();
             $table->foreignIdFor(\App\Models\User::class)->constrained();
             $table->foreignIdFor(\App\Models\Animal::class)->constrained();
             $table->timestamps();

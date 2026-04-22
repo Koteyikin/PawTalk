@@ -12,6 +12,7 @@ Route::get('/home', [HomeController::class, 'index'])->name('home.index');
 Route::middleware('auth')->group(function () {
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::post('/profile/create', [ProfileController::class, 'create'])->name('profile.create');
 });
 
 Route::middleware('guest')->group(function () {

@@ -227,7 +227,7 @@
             <!-- name of each tab group should be unique -->
             <!-- name of each tab group should be unique -->
             <div class="tabs  p-6">
-                <input type="radio" name="my_tabs_6" class="tab" aria-label="Tab 1" />
+                <input type="radio" name="my_tabs_6" class="tab" aria-label="Tab 1" checked="checked" />
 
                 <div id="profileTab" class="tab-content transition-all duration-200">
                                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -251,6 +251,13 @@
                                                         <span class="badge badge-outline" style="border-color: #4E8EA2; color: #4E8EA2;">Кайтсёрфинг</span>
                                                     </div>
                                                 </div>
+                                                <div class="card bg-base-200 rounded-box p-5 -mt-4" style="background: oklch(100% 0 0);">
+                                                    <h3 class="text-xl font-semibold mb-3">Ваши животные</h3>
+                                                    <div class="flex flex-wrap gap-2">
+                                                        <span class="badge badge-outline" style="border-color: #4E8EA2; color: #4E8EA2;">Трекинг</span>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                             <div class="space-y-5">
                                                 <div class="card bg-base-200 rounded-box p-5 text-center" style="background: oklch(96% 0.003 264.542);">
@@ -265,13 +272,16 @@
                                                         <div class="stat-desc">⭐ 98% позитивных</div>
                                                     </div>
                                                 </div>
-                                                <button class="btn btn-primary w-full">Заполнить профиль</button>
+                                                <button id="openModalBtn" class="btn w-full" style="background: #4976F0; color: white; border: none; padding: 12px 24px; border-radius: 1rem;">
+                                                    ✏️ Заполнить профиль
+                                                </button>
+                                                @include('profile.partials.modalCreate')
                                             </div>
                                         </div>
                                     </div>
 
-                <input type="radio" name="my_tabs_6" class="tab" aria-label="Tab 2" checked="checked" />
-                <div class="tab-content bg-base-100 border-base-300 p-6">Tab content 1</div>
+                <input type="radio" name="my_tabs_6" class="tab" aria-label="Tab 2"  />
+                <div class="tab-content bg-base-100 border-base-300 p-6">Tab content 2</div>
 
                 <input type="radio" name="my_tabs_6" class="tab" aria-label="Tab 3" />
                 <div class="tab-content bg-base-100 border-base-300 p-6">Tab content 3</div>
