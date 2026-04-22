@@ -16,6 +16,7 @@ class RegisterController extends Controller
     public function store(RegisterRequest $request)
     {
         User::create($request->validated());
-        return view('profile.home');
+
+        return view('home');
     }
 }

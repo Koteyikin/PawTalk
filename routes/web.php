@@ -1,13 +1,23 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/home');
-
 Route::get('/home', [HomeController::class, 'index'])->name('home.index');
 
-Route::get('/profile', [\App\Http\Controllers\Auth\RegisterController::class, 'index'])->name('register.index');
-Route::post('/profile', [\App\Http\Controllers\Auth\RegisterController::class, 'store'])->name('register.store');
+Route::middleware('auth')->group(function () {
+    Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+});
 
-Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'store'])->name('login.store');
+Route::middleware('guest')->group(function () {
+    Route::post('/profile', [RegisterController::class, 'store'])->name('register.store');
+    Route::post('/login', [LoginController::class, 'store'])->name('login.store');
+
+});
+
+

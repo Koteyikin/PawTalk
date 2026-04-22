@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('about_users', function (Blueprint $table) {
             $table->id();
-            $table->string('full_name');
-            $table->date('birthday');
+            $table->string('name');
+            $table->string('surname');
+            $table->string('contact');
             $table->enum('gender', ['Мужской', 'Женский', 'Неизвестно']);
+            $table->enum('status', ['Писатель', 'Читатель',])->default('Писатель');
+            $table->string('interests');
             $table->text('city');
             $table->text('avatar');
             $table->text('description');
