@@ -32,7 +32,7 @@
 
         <!-- Форма с прокруткой -->
         <div class="p-6 overflow-y-auto flex-1">
-            <form id="profileForm" class="space-y-5" action="{{ route('profile.create') }}" method="post" >
+            <form id="profileForm" class="space-y-5" action="{{ route('profile.create') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
 {{--                @foreach(\App\Models\Animal::all() as $s)--}}
@@ -91,7 +91,6 @@
 
                         </select>
                     </div>
-                </div>
 
                 <!-- Интересы (текстовое поле с подсказкой) -->
                 <div class="form-control w-full">
@@ -121,10 +120,6 @@
                     <label class="label">
                         <span class="label-text-alt">Поддерживаются JPG, PNG, Максимум 5 МБ</span>
                     </label>
-                    <!-- Превью загружаемого изображения (опционально, но удобно) -->
-                    <div id="avatarPreview" class="mt-2 hidden">
-                        <img id="previewImg" class="w-16 h-16 rounded-full object-cover border-2 border-primary" alt="Preview" />
-                    </div>
                 </div>
 
                 <!-- Описание (textarea) -->
