@@ -91,7 +91,7 @@
 
                         </select>
                     </div>
-
+                </div>
                 <!-- Интересы (текстовое поле с подсказкой) -->
                 <div class="form-control w-full">
                     <label class="label">

@@ -13,6 +13,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::post('/profile/create', [ProfileController::class, 'create'])->name('profile.create');
+    Route::post('profile/createAnimal', [ProfileController::class, 'animal'])->name('profile.animal');
 });
 
 Route::middleware('guest')->group(function () {

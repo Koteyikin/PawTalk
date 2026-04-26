@@ -23,7 +23,6 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\Status::class)->constrained();
             $table->foreignIdFor(\App\Models\Gender::class)->constrained();
             $table->foreignIdFor(\App\Models\User::class)->constrained();
-            $table->foreignIdFor(\App\Models\Animal::class)->constrained();
             $table->timestamps();
         });
     }

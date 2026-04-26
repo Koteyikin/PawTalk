@@ -17,7 +17,7 @@ class AboutUser extends Model
         'status_id',
         'gender_id',
         'user_id',
-        'animal_id'
+//        'animal_id'
     ];
 
     public function user()
