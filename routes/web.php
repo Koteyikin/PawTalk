@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\article\ArticleController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
@@ -8,6 +9,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/home');
 Route::get('/home', [HomeController::class, 'index'])->name('home.index');
+Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
+Route::get('articles/show', [\App\Http\Controllers\article\ArticleFunctionController::class, 'index'])->name('articles.show');
 
 Route::middleware('auth')->group(function () {
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');

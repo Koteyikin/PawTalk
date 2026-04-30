@@ -9,14 +9,14 @@
     @vite('resources/css/app.css')
 </head>
 <body class="color-baw min-h-screen bg-cover bg-center bg-no-repeat">
-{{--        @include('partials.navbar')--}}
+        @include('partials.navbar')
 {{--    <div class="container mx-auto px-4">--}}
 
         @yield('body')
 {{--    </div>--}}
-        @if(session('success'))
-            <div class="alert alert-success mb-4">{{ session('success') }}</div>
-        @endif
+{{--        @if(session('success'))--}}
+{{--            <div class="alert alert-success mb-4">{{ session('success') }}</div>--}}
+{{--        @endif--}}
 
 </body>
 </html>

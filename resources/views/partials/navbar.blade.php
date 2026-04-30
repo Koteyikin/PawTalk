@@ -1,27 +1,27 @@
-<div class="navbar bg-base-100 shadow-sm ">
-    <div class="flex-1">
-        <a class="btn btn-ghost text-xl">PawTalk</a>
+<div class="navbar absolute top-0 left-0 right-0 z-10 px-8 py-4 bg-transparent">
+    <div class="navbar-start">
+        <a class="font-display text-2xl font-bold text-white flex items-center gap-2">
+            🐾 PetSpace
+        </a>
     </div>
-    <div class="flex gap-2">
-        <input type="text" placeholder="Search" class="input input-bordered w-24 md:w-auto"/>
-        @include('partials.register.auth')
-        <div class="dropdown dropdown-end">
-            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
-                <div class="w-10 rounded-full">
-                    <img
-                        alt="Tailwind CSS Navbar component"
-                        src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"/>
-                </div>
-            </div>
+    @guest()
+        <div class="navbar-end gap-2">
+        <a href="#" onclick="my_modal_1.showModal()" class="btn btn-primary btn-sm rounded-full px-6 text-white border-none shadow-lg">
+            Войти
+        </a>
+        <a href="#" onclick="my_modal_2.showModal()" class=" btn btn-primary btn-sm rounded-full px-6 text-white border-none shadow-lg">
+            Зарегистрироваться
+        </a>
+    @else
+    @endguest
+    <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal gap-1 px-1">
+            <li><a href="{{ route('profile.index') }}" class="text-white/70 hover:text-white hover:bg-white/10 rounded-full text-xs uppercase tracking-widest font-semibold">Профиль</a></li>
+            <li><a href="{{ route('articles.index') }}" class="text-white/70 hover:text-white hover:bg-white/10 rounded-full text-xs uppercase tracking-widest font-semibold">Статьи</a></li>
+            <li><a class="text-white/70 hover:text-white hover:bg-white/10 rounded-full text-xs uppercase tracking-widest font-semibold">Питомцы</a></li>
+        </ul>
+    </div>
 
-            <ul
-                tabindex="-1"
-                class="menu menu-xl dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-                <li>
-                    <a href="{{ route('profile.index') }}" class="btn" >Profile</a>
-                </li>
-                <li><a href="{{ route('logout') }}">Logout</a></li>
-            </ul>
-        </div>
+            @include('partials.register.auth')
     </div>
 </div>

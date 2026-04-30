@@ -127,27 +127,7 @@
             <span class="paw-float absolute text-4xl opacity-5 top-[70%] right-[20%]">🐾</span>
         </div>
 
-        {{-- NAVBAR --}}
-        <div class="navbar absolute top-0 left-0 right-0 z-10 px-8 py-4 bg-transparent">
-            <div class="navbar-start">
-                <a class="font-display text-2xl font-bold text-white flex items-center gap-2">
-                    🐾 PetSpace
-                </a>
-            </div>
-            <div class="navbar-center hidden lg:flex">
-                <ul class="menu menu-horizontal gap-1 px-1">
-                    <li><a class="text-white/70 hover:text-white hover:bg-white/10 rounded-full text-xs uppercase tracking-widest font-semibold">Профиль</a></li>
-                    <li><a class="text-white/70 hover:text-white hover:bg-white/10 rounded-full text-xs uppercase tracking-widest font-semibold">Статьи</a></li>
-                    <li><a class="text-white/70 hover:text-white hover:bg-white/10 rounded-full text-xs uppercase tracking-widest font-semibold">Питомцы</a></li>
-                    <li><a class="text-white/70 hover:text-white hover:bg-white/10 rounded-full text-xs uppercase tracking-widest font-semibold">Сообщество</a></li>
-                </ul>
-            </div>
-            <div class="navbar-end">
-                <a href="#" class="btn btn-primary btn-sm rounded-full px-6 text-white border-none shadow-lg">
-                    Войти
-                </a>
-            </div>
-        </div>
+
 
         {{-- Hero content --}}
         <div class="relative z-10 text-center max-w-2xl px-6 animate-hero">

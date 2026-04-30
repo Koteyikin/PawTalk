@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html lang="ru" data-theme="petspace">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Статьи — PetSpace</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/dist/full.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+@extends('layouts.main')
+@section('title', 'Статьи')
+@section('body')
+
     <style>
         :root {
             --color-base-100: oklch(96% 0.003 264.542);
@@ -84,25 +79,6 @@
 {{-- ══════════════════════════════ --}}
 {{--  NAVBAR                        --}}
 {{-- ══════════════════════════════ --}}
-<div class="navbar px-8 py-4 bg-base-200 border-b border-base-300 sticky top-0 z-50 shadow-sm">
-    <div class="navbar-start">
-        <a href="{{ route('home') }}" class="font-display text-2xl font-bold flex items-center gap-2 text-neutral">
-            🐾 PetSpace
-        </a>
-    </div>
-    <div class="navbar-center hidden lg:flex">
-        <ul class="menu menu-horizontal gap-1 px-1">
-            <li><a href="{{ route('home') }}" class="rounded-full text-xs uppercase tracking-widest font-semibold text-base-content/60 hover:text-base-content hover:bg-base-300">Главная</a></li>
-            <li><a href="{{ route('articles.index') }}" class="rounded-full text-xs uppercase tracking-widest font-semibold text-primary bg-primary/10">Статьи</a></li>
-            <li><a class="rounded-full text-xs uppercase tracking-widest font-semibold text-base-content/60 hover:text-base-content hover:bg-base-300">Питомцы</a></li>
-            <li><a class="rounded-full text-xs uppercase tracking-widest font-semibold text-base-content/60 hover:text-base-content hover:bg-base-300">Сообщество</a></li>
-        </ul>
-    </div>
-    <div class="navbar-end gap-3">
-        <a href="{{ route('login') }}" class="btn btn-ghost btn-sm rounded-full text-base-content/60">Войти</a>
-        <a href="{{ route('register') }}" class="btn btn-primary btn-sm rounded-full px-6 text-white border-none">Регистрация</a>
-    </div>
-</div>
 
 
 {{-- ══════════════════════════════ --}}
@@ -122,7 +98,7 @@
         {{-- Breadcrumbs --}}
         <div class="breadcrumbs text-xs text-white/40 mb-6">
             <ul>
-                <li><a href="{{ route('home') }}" class="hover:text-white/70">Главная</a></li>
+                <li><a href="{{ route('home.index') }}" class="hover:text-white/70">Главная</a></li>
                 <li class="text-white/60">Статьи</li>
             </ul>
         </div>
@@ -138,7 +114,7 @@
                     Находите нужное, делитесь своим.
                 </p>
             </div>
-            <a href="{{ route('articles.create') }}"
+            <a href="#"
                class="btn btn-primary rounded-full px-7 text-white border-none shadow-xl flex-shrink-0 hover:-translate-y-1 transition-transform">
                 ✏️ Написать статью
             </a>
@@ -172,7 +148,7 @@
     <div class="max-w-5xl mx-auto">
         <p class="text-xs font-bold uppercase tracking-[0.14em] text-primary mb-5">⭐ Статья недели</p>
 
-        <a href="{{ route('articles.show', 1) }}"
+        <a href="#"
            class="card bg-neutral overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group">
             <div class="relative min-h-64 md:min-h-80">
                 {{-- Placeholder image via gradient --}}
@@ -277,7 +253,7 @@
         <div class="flex flex-col gap-5">
 
             {{-- Article 1 --}}
-            <a href="{{ route('articles.show', 1) }}"
+            <a href="#"
                class="card bg-base-200 border border-base-300 overflow-hidden article-card
                       hover:shadow-lg hover:border-primary/30 hover:bg-base-200 transition-all duration-250
                       animate-fade-up delay-1 group"
@@ -323,7 +299,7 @@
             </a>
 
             {{-- Article 2 --}}
-            <a href="{{ route('articles.show', 2) }}"
+            <a href="#"
                class="card bg-base-200 border border-base-300 overflow-hidden article-card
                       hover:shadow-lg hover:border-accent/30 transition-all duration-250
                       animate-fade-up delay-2 group"
@@ -363,7 +339,7 @@
             </a>
 
             {{-- Article 3 --}}
-            <a href="{{ route('articles.show', 3) }}"
+            <a href="#"
                class="card bg-base-200 border border-base-300 overflow-hidden article-card
                       hover:shadow-lg hover:border-success/30 transition-all duration-250
                       animate-fade-up delay-3 group"
@@ -403,7 +379,7 @@
             </a>
 
             {{-- Article 4 --}}
-            <a href="{{ route('articles.show', 4) }}"
+            <a href="#"
                class="card bg-base-200 border border-base-300 overflow-hidden article-card
                       hover:shadow-lg hover:border-warning/30 transition-all duration-250
                       animate-fade-up delay-4 group"
@@ -443,7 +419,7 @@
             </a>
 
             {{-- Article 5 --}}
-            <a href="{{ route('articles.show', 5) }}"
+            <a href="#"
                class="card bg-base-200 border border-base-300 overflow-hidden article-card
                       hover:shadow-lg hover:border-error/30 transition-all duration-250
                       animate-fade-up delay-5 group"
@@ -483,7 +459,7 @@
             </a>
 
             {{-- Article 6 --}}
-            <a href="{{ route('articles.show', 6) }}"
+            <a href="#"
                class="card bg-base-200 border border-base-300 overflow-hidden article-card
                       hover:shadow-lg hover:border-primary/30 transition-all duration-250
                       animate-fade-up delay-6 group"
@@ -592,6 +568,4 @@
         </div>
     </div>
 </footer>
-
-</body>
-</html>
+@endsection

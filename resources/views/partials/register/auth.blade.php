@@ -1,6 +1,4 @@
 @guest()
-    <button class="btn" onclick="my_modal_2.showModal()">Зарегистрироваться</button>
-    <button class="btn" onclick="my_modal_1.showModal()">Войти</button>
     <dialog id="my_modal_1" class="modal modal-middle">
         <div class="modal-box rounded-2xl">
             <form method="dialog">
