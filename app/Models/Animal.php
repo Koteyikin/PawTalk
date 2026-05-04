@@ -20,4 +20,9 @@ class Animal extends Model
     {
         return $this->belongsTo(StatusAnimal::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

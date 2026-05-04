@@ -16,6 +16,7 @@ return new class extends Migration
             $table->text('nickname');
             $table->text('email');
             $table->text('password')->nullable();
+//            $table->foreignId('role_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
 

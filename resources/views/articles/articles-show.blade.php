@@ -126,7 +126,6 @@
         }
         .animate-in { animation: fadeIn 0.6s ease both; }
     </style>
-    </head>
     <body class="bg-base-100 text-base-content">
 
     {{-- Reading progress bar --}}
@@ -152,17 +151,19 @@
                     <li class="text-white/60">Здоровье</li>
                 </ul>
             </div>
-
             {{-- Category & reading time --}}
             <div class="flex items-center gap-3 mb-5 flex-wrap">
-                <div class="badge badge-primary text-white border-none font-bold">Здоровье</div>
-                <div class="badge bg-white/15 text-white border-none">🐱 Кошки</div>
-                <span class="text-white/40 text-xs">5 мин чтения</span>
+                <div class="badge badge-primary text-white border-none font-bold">
+                    @foreach($articles->tags as $tag)
+                        <span class="badge">{{ $tag->name }}</span>
+                    @endforeach
+                <div class="badge bg-white/15 text-white border-none">{{ $articles->category->name }}</div>
+                <span class="text-white/40 text-xs">{{ $articles->reading_time }}</span>
             </div>
 
             {{-- Title --}}
             <h1 class="font-display text-3xl md:text-4xl lg:text-5xl font-black text-white leading-tight mb-6">
-                Как подготовить кошку<br class="hidden md:block"> к первому визиту<br class="hidden md:block"> к ветеринару
+                {{ $articles->title }}
             </h1>
 
             {{-- Author + meta --}}
@@ -172,8 +173,8 @@
                         <div class="w-11 h-11 rounded-full bg-primary text-white font-bold flex items-center justify-center text-sm">АК</div>
                     </div>
                     <div>
-                        <div class="text-white font-semibold text-sm">Анна Козлова</div>
-                        <div class="text-white/40 text-xs">14 апреля 2025</div>
+                        <div class="text-white font-semibold text-sm">{{ $articles->author->aboutUser->name }} {{ $articles->author->aboutUser->surname }}</div>
+                        <div class="text-white/40 text-xs">{{ $articles->created_at }}</div>
                     </div>
                 </div>
                 <div class="flex items-center gap-5 ml-auto text-white/50 text-sm">
@@ -205,111 +206,16 @@
                     </p>
 
                     {{-- Article body --}}
-                    <div class="article-body" id="article-content">
-
-                        <h2 id="why-stress">Почему кошки боятся ветеринара</h2>
-                        <p>
-                            Для кошки поездка к врачу — это целый набор стрессоров: незнакомый запах переноски,
-                            шум машины, чужое помещение, запахи других животных и чужие руки. В отличие от собак,
-                            кошки — территориальные животные, которые крайне болезненно реагируют на любое
-                            нарушение привычного пространства.
-                        </p>
-                        <p>
-                            <strong>Важно понимать:</strong> стресс во время визита — это не просто дискомфорт.
-                            Он влияет на физиологические показатели: пульс, давление, температуру тела.
-                            Это может затруднить диагностику и даже исказить результаты анализов.
-                        </p>
-
-                        <div class="tip-box">
-                            <div class="tip-label">💡 Совет эксперта</div>
-                            <p style="margin:0; color:#374151; font-size:0.9rem;">
-                                Исследования показывают, что кошки, которых приучали к переноске с детства,
-                                переносят визиты к ветеринару в 3-4 раза спокойнее. Начинайте приучение
-                                как можно раньше.
-                            </p>
-                        </div>
-
-                        <h2 id="preparation">Подготовка за несколько дней</h2>
-                        <h3>Приучите кошку к переноске заранее</h3>
-                        <p>
-                            Главная ошибка — доставать переноску только перед визитом к врачу. Кошка мгновенно
-                            ассоциирует её с неприятным опытом. Поставьте переноску в жилой зоне за 5-7 дней
-                            до визита и положите внутрь любимое одеяло или игрушку.
-                        </p>
-                        <ul>
-                            <li>Оставьте дверцу открытой — пусть кошка заходит добровольно</li>
-                            <li>Покормите питомца рядом с переноской, а потом и внутри неё</li>
-                            <li>Использруйте феромоновый спрей Feliway — он снижает тревожность</li>
-                            <li>Накройте переноску знакомым полотенцем с вашим запахом</li>
-                        </ul>
-
-                        <h3>Не кормите за 3-4 часа до визита</h3>
-                        <p>
-                            Голодный желудок снизит риск рвоты во время транспортировки. Кроме того,
-                            некоторые процедуры и анализы требуют пустого желудка. Воду при этом убирать
-                            не нужно — она должна быть доступна вплоть до выезда.
-                        </p>
-
-                        <h2 id="transport">Транспортировка</h2>
-                        <p>
-                            Накройте переноску полотенцем: это создаёт ощущение укрытия и снижает
-                            визуальную стимуляцию. Избегайте резких торможений и громкой музыки в машине.
-                            Говорите с кошкой спокойным голосом на протяжении всей дороги.
-                        </p>
-
-                        <blockquote>
-                            «Голос хозяина — один из самых мощных успокаивающих факторов для кошки
-                            во время стресса. Не молчите в машине.»
-                            <br>— Доктор Светлана Морозова, ветеринар-фелинолог
-                        </blockquote>
-
-                        <h2 id="clinic">В клинике</h2>
-                        <p>
-                            По возможности запишитесь на первый приём с утра: меньше очередей, меньше
-                            чужих животных в зале ожидания, врач ещё не устал. Попросите администратора
-                            провести вас сразу в кабинет, минуя общий зал.
-                        </p>
-
-                        <div class="warning-box">
-                            <div class="tip-label">⚠️ Обратите внимание</div>
-                            <p style="margin:0; color:#92400e; font-size:0.9rem;">
-                                Не выпускайте кошку из переноски в зоне ожидания даже если она просится —
-                                там могут быть другие животные, запахи которых усилят тревожность.
-                            </p>
-                        </div>
-
-                        <h3>Что взять с собой</h3>
-                        <ol>
-                            <li>Ветеринарный паспорт с отметками о прививках</li>
-                            <li>Список текущих лекарств (если питомец что-то принимает)</li>
-                            <li>Анализы, если были сданы заранее</li>
-                            <li>Любимое лакомство для поощрения после осмотра</li>
-                            <li>Сменную пелёнку на случай «аварии»</li>
-                        </ol>
-
-                        <h2 id="after">После визита</h2>
-                        <p>
-                            Дома создайте кошке тихое спокойное место, где она сможет прийти в себя.
-                            Не навязывайте контакт: позвольте ей самой решить, когда она готова к общению.
-                            Угостите лакомством и поиграйте в привычные игры — это поможет восстановить
-                            ощущение безопасности.
-                        </p>
-                        <p>
-                            Если визиты к ветеринару предстоят регулярно (хронические заболевания, плановые
-                            осмотры), стоит проконсультироваться с врачом о применении лёгких успокоительных
-                            средств на растительной основе.
-                        </p>
+                    <div class="article-body" id="article-body">{!! $articles->body !!}
 
                     </div>{{-- end article-body --}}
-
 
                     {{-- Tags --}}
                     <div class="flex flex-wrap gap-2 mt-10 pt-8 border-t border-base-300">
                         <span class="text-xs text-base-content/40 mr-1 self-center">Теги:</span>
-                        <span class="badge badge-ghost hover:badge-primary cursor-pointer transition-colors">🐱 Кошки</span>
-                        <span class="badge badge-ghost hover:badge-primary cursor-pointer transition-colors">Здоровье</span>
-                        <span class="badge badge-ghost hover:badge-primary cursor-pointer transition-colors">Ветеринар</span>
-                        <span class="badge badge-ghost hover:badge-primary cursor-pointer transition-colors">Советы</span>
+                        @foreach($articles->tags as $tag)
+                            <span class="badge badge-ghost hover:badge-primary cursor-pointer transition-colors">{{ $tag->name }}</span>
+                        @endforeach
                     </div>
 
                     {{-- Actions --}}
@@ -354,74 +260,59 @@
                         </h3>
 
                         {{-- Add comment --}}
-                        <div class="card bg-base-200 border border-base-300 mb-6">
-                            <div class="card-body p-5 gap-3">
-                                <div class="flex items-center gap-3">
-                                    <div class="avatar placeholder flex-shrink-0">
-                                        <div class="w-9 h-9 rounded-full bg-neutral/20 text-neutral/40 font-bold flex items-center justify-center text-xs">Вы</div>
+                        <form action="{{ route('comments.store') }}" method="post">
+                            @csrf
+                            <input type="hidden" value="{{ auth()->id() }}" name="user_id">
+                            <input type="hidden" value="{{ $articles->id }}" name="article_id">
+                            <input type="hidden" value="" name="parent_id">
+                            <input type="hidden" value="1" name="is_approved">
+                            <div class="card bg-base-200 border border-base-300 mb-6">
+                                <div class="card-body p-5 gap-3">
+                                    <div class="flex items-center gap-3">
+                                        <div class="avatar placeholder flex-shrink-0">
+                                            <div class="w-9 h-9 rounded-full bg-neutral/20 text-neutral/40 font-bold flex items-center justify-center text-xs">Вы</div>
+                                        </div>
+                                        <textarea name="body" class="textarea textarea-bordered bg-base-100 rounded-2xl flex-1 text-sm resize-none
+                                                     focus:border-primary focus:outline-none"
+                                                  rows="2" placeholder="Напишите комментарий..."></textarea>
                                     </div>
-                                    <textarea class="textarea textarea-bordered bg-base-100 rounded-2xl flex-1 text-sm resize-none
-                                                 focus:border-primary focus:outline-none"
-                                              rows="2" placeholder="Напишите комментарий..."></textarea>
-                                </div>
-                                <div class="flex justify-end">
-                                    <button class="btn btn-primary btn-sm rounded-full px-6 text-white border-none">
-                                        Отправить
-                                    </button>
+                                    <div class="flex justify-end">
+                                        <button class="btn btn-primary btn-sm rounded-full px-6 text-white border-none">
+                                            Отправить
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </form>
 
-                        {{-- Comment 1 --}}
-                        <div class="flex gap-3 mb-5">
-                            <div class="avatar placeholder flex-shrink-0">
-                                <div class="w-9 h-9 rounded-full bg-accent text-white font-bold flex items-center justify-center text-xs">МС</div>
-                            </div>
-                            <div class="flex-1">
-                                <div class="card bg-base-200 border border-base-300">
-                                    <div class="card-body p-4 gap-2">
-                                        <div class="flex items-center gap-2">
-                                            <span class="text-sm font-semibold text-neutral">Михаил Семёнов</span>
-                                            <span class="text-xs text-base-content/35">2 часа назад</span>
-                                        </div>
-                                        <p class="text-sm text-base-content/70 leading-relaxed">
-                                            Отличная статья! Про феромоновый спрей — золото. Моя Муся теперь
-                                            сама заходит в переноску после того, как мы начали его использовать.
-                                        </p>
-                                        <div class="flex items-center gap-3 text-xs text-base-content/35 mt-1">
-                                            <button class="hover:text-primary transition-colors">❤️ 7</button>
-                                            <button class="hover:text-primary transition-colors">Ответить</button>
+                        @foreach($articles->comments as $comment)
+                            <div class="flex gap-3 mb-5">
+                                <div class="avatar placeholder flex-shrink-0">
+                                    <div class="w-9 h-9 rounded-full bg-accent text-white font-bold flex items-center justify-center text-xs">
+                                        {{ mb_strtoupper(mb_substr($comment->author->aboutUser->name ?? 'А', 0, 1)) }}
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="card bg-base-200 border border-base-300">
+                                        <div class="card-body p-4 gap-2">
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-sm font-semibold text-neutral">
+                                                    {{ $comment->author->aboutUser->name ?? '—' }}
+                                                    {{ $comment->author->aboutUser->surname ?? '' }}
+                                                </span>
+                                                <span class="text-xs text-base-content/35">
+                                                    {{ $comment->created_at->diffForHumans() }}
+                                                </span>
+                                            </div>
+                                                <p class="text-sm text-base-content/70 leading-relaxed">{{ $comment->body }}</p>
+                                            <div class="flex items-center gap-3 text-xs text-base-content/35 mt-1">
+                                                <button  class="hover:text-primary transition-colors">❤️ 7</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        {{-- Comment 2 --}}
-                        <div class="flex gap-3 mb-5">
-                            <div class="avatar placeholder flex-shrink-0">
-                                <div class="w-9 h-9 rounded-full bg-success text-white font-bold flex items-center justify-center text-xs">ЕВ</div>
-                            </div>
-                            <div class="flex-1">
-                                <div class="card bg-base-200 border border-base-300">
-                                    <div class="card-body p-4 gap-2">
-                                        <div class="flex items-center gap-2">
-                                            <span class="text-sm font-semibold text-neutral">Елена Васильева</span>
-                                            <span class="text-xs text-base-content/35">5 часов назад</span>
-                                        </div>
-                                        <p class="text-sm text-base-content/70 leading-relaxed">
-                                            Добавлю от себя: попросите клинику о кошачьем кабинете — многие
-                                            современные клиники принимают кошек отдельно от собак. Это
-                                            существенно снижает стресс.
-                                        </p>
-                                        <div class="flex items-center gap-3 text-xs text-base-content/35 mt-1">
-                                            <button class="hover:text-primary transition-colors">❤️ 14</button>
-                                            <button class="hover:text-primary transition-colors">Ответить</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
 
                         <button class="btn btn-ghost btn-sm rounded-full border border-base-300 text-base-content/50 hover:border-primary hover:text-primary mt-2 transition-all">
                             Показать ещё 10 комментариев
@@ -434,19 +325,29 @@
                 {{-- ── SIDEBAR ── --}}
                 <aside class="flex flex-col gap-5 lg:sticky lg:top-24 animate-in">
 
-                    {{-- Table of contents --}}
-                    <div class="card bg-base-200 border border-base-300">
-                        <div class="card-body p-5 gap-3">
-                            <h5 class="text-xs font-bold uppercase tracking-[0.1em] text-base-content/40">Содержание</h5>
-                            <nav class="flex flex-col gap-0.5">
-                                <a href="#why-stress"   class="toc-link active">Почему кошки боятся врача</a>
-                                <a href="#preparation"  class="toc-link">Подготовка заранее</a>
-                                <a href="#transport"    class="toc-link">Транспортировка</a>
-                                <a href="#clinic"       class="toc-link">В клинике</a>
-                                <a href="#after"        class="toc-link">После визита</a>
-                            </nav>
+                    @php
+                        // Парсим заголовки из body статьи
+                        preg_match_all('/<h[23][^>]*>(.*?)<\/h[23]>/i', $articles->body, $matches);
+                        $headings = $matches[1] ?? [];
+                    @endphp
+
+                    @if(count($headings) > 0)
+                        <div class="card bg-base-200 border border-base-300">
+                            <div class="card-body p-5 gap-3">
+                                <h5 class="text-xs font-bold uppercase tracking-[0.1em] text-base-content/40">
+                                    Содержание
+                                </h5>
+                                <nav class="flex flex-col gap-0.5">
+                                    @foreach($headings as $index => $heading)
+                                        <a href="#heading-{{ $index }}"
+                                           class="toc-link block py-1.5 px-3 text-sm text-base-content/60 border-l-2 border-transparent rounded-r-lg hover:border-primary hover:text-primary hover:bg-primary/5 transition-all duration-200">
+                                            {{ strip_tags($heading) }}
+                                        </a>
+                                    @endforeach
+                                </nav>
+                            </div>
                         </div>
-                    </div>
+                    @endif
 
                     {{-- Share --}}
                     <div class="card bg-base-200 border border-base-300">
@@ -464,22 +365,9 @@
                     <div class="card bg-base-200 border border-base-300">
                         <div class="card-body p-5 gap-4">
                             <h5 class="text-xs font-bold uppercase tracking-[0.1em] text-base-content/40">Похожие статьи</h5>
-
-                            <a href="{{ route('articles.show', 6) }}"
-                               class="flex gap-3 group items-start">
-                                <div class="w-14 h-14 rounded-xl flex-shrink-0 flex items-center justify-center text-2xl"
-                                     style="background: linear-gradient(135deg,#eef3ff,#dce8ff);">🐈</div>
-                                <div>
-                                    <p class="text-xs font-semibold text-neutral leading-snug group-hover:text-primary transition-colors line-clamp-2">
-                                        Почему кошка мурлычет и что это на самом деле значит
-                                    </p>
-                                    <p class="text-xs text-base-content/40 mt-1">4 мин · 128 ❤️</p>
-                                </div>
-                            </a>
-
                             <div class="divider my-0"></div>
 
-                            <a href="{{ route('articles.show', 3) }}"
+                            <a href="#"
                                class="flex gap-3 group items-start">
                                 <div class="w-14 h-14 rounded-xl flex-shrink-0 flex items-center justify-center text-2xl"
                                      style="background: linear-gradient(135deg,#e6faf3,#c5f0e1);">🐰</div>
@@ -493,7 +381,7 @@
 
                             <div class="divider my-0"></div>
 
-                            <a href="{{ route('articles.show', 2) }}"
+                            <a href="#"
                                class="flex gap-3 group items-start">
                                 <div class="w-14 h-14 rounded-xl flex-shrink-0 flex items-center justify-center text-2xl"
                                      style="background: linear-gradient(135deg,#e8f5f8,#c8e8ef);">🐶</div>
@@ -525,7 +413,7 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
 
-                <a href="{{ route('articles.show', 4) }}"
+                <a href="#"
                    class="card bg-base-100 border border-base-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-250 group">
                     <div class="h-32 rounded-t-2xl flex items-center justify-center text-5xl"
                          style="background: linear-gradient(135deg,#fef9ed,#fdedc5);">🦜</div>
@@ -538,7 +426,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('articles.show', 5) }}"
+                <a href="#"
                    class="card bg-base-100 border border-base-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-250 group">
                     <div class="h-32 rounded-t-2xl flex items-center justify-center text-5xl"
                          style="background: linear-gradient(135deg,#fef2f2,#fecaca);">🐠</div>
@@ -551,7 +439,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('articles.show', 2) }}"
+                <a href="#"
                    class="card bg-base-100 border border-base-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-250 group">
                     <div class="h-32 rounded-t-2xl flex items-center justify-center text-5xl"
                          style="background: linear-gradient(135deg,#e8f5f8,#c8e8ef);">🐶</div>
@@ -610,6 +498,35 @@
                 link.classList.toggle('active', link.getAttribute('href') === '#' + current);
             });
         });
+        // Добавляем id к заголовкам в теле статьи
+        document.addEventListener('DOMContentLoaded', () => {
+            const articleBody = document.querySelector('#article-body')
+            if (!articleBody) return
+
+            const headings = articleBody.querySelectorAll('h2, h3')
+            headings.forEach((heading, index) => {
+                heading.id = 'heading-' + index
+                heading.classList.add('scroll-mt-24') // отступ при скролле из-за sticky navbar
+            })
+
+            // Подсветка активного пункта при скролле
+            const tocLinks = document.querySelectorAll('.toc-link')
+
+            window.addEventListener('scroll', () => {
+                let current = 0
+                headings.forEach((heading, index) => {
+                    if (window.scrollY >= heading.offsetTop - 140) {
+                        current = index
+                    }
+                })
+                tocLinks.forEach((link, index) => {
+                    link.classList.toggle('border-primary', index === current)
+                    link.classList.toggle('text-primary', index === current)
+                    link.classList.toggle('bg-primary/5', index === current)
+                    link.classList.toggle('border-transparent', index !== current)
+                })
+            })
+        })
     </script>
 
 @endsection

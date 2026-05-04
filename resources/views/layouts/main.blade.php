@@ -7,6 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('title')</title>
     @vite('resources/css/app.css')
+    @vite(['resources/js/app.js'])
+    <link href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
+    @stack('styles')
 </head>
 <body class="color-baw min-h-screen bg-cover bg-center bg-no-repeat">
         @include('partials.navbar')
@@ -17,6 +21,6 @@
 {{--        @if(session('success'))--}}
 {{--            <div class="alert alert-success mb-4">{{ session('success') }}</div>--}}
 {{--        @endif--}}
-
+        @stack('scripts')
 </body>
 </html>

@@ -114,10 +114,11 @@
                     Находите нужное, делитесь своим.
                 </p>
             </div>
-            <a href="#"
+            <a href="#" onclick="article_modal.showModal()"
                class="btn btn-primary rounded-full px-7 text-white border-none shadow-xl flex-shrink-0 hover:-translate-y-1 transition-transform">
                 ✏️ Написать статью
             </a>
+            @include('articles.partials.modalCreateArticles')
         </div>
 
         {{-- Quick stats --}}
@@ -253,7 +254,9 @@
         <div class="flex flex-col gap-5">
 
             {{-- Article 1 --}}
-            <a href="#"
+            @forelse(\App\Models\Article::all() as $s)
+
+            <a href="{{ route('articles.show', $s->id) }}"
                class="card bg-base-200 border border-base-300 overflow-hidden article-card
                       hover:shadow-lg hover:border-primary/30 hover:bg-base-200 transition-all duration-250
                       animate-fade-up delay-1 group"
@@ -272,22 +275,26 @@
                     {{-- Content --}}
                     <div class="flex-1 p-5 flex flex-col gap-2">
                         <div class="flex items-center gap-2 flex-wrap">
-                            <div class="badge badge-soft badge-primary text-xs font-bold">Здоровье</div>
-                            <span class="text-xs text-base-content/40">5 мин чтения</span>
+                            <div class="badge badge-soft badge-primary text-xs font-bold">
+                                @foreach($s->tags as $tag)
+                                    <span>{{ $tag->name }}</span>
+                                @endforeach
+                            </div>
+                            <span class="text-xs text-base-content/40">{{ $s->reading_time }} мин чтения</span>
                             <span class="text-xs text-base-content/40 ml-auto">2 часа назад</span>
                         </div>
                         <h3 class="font-display text-lg font-bold text-neutral leading-snug group-hover:text-primary transition-colors">
-                            Как подготовить кошку к первому визиту к ветеринару
+                            {{ $s->title }}
                         </h3>
                         <p class="text-sm text-base-content/60 leading-relaxed line-clamp-2">
-                            Первый поход к врачу — стресс для любого питомца. Рассказываем, как сделать этот опыт
-                            спокойным и даже приятным для вашей кошки, что взять с собой и как успокоить животное.
+                            {{ $s->excerpt }}
                         </p>
                         <div class="flex items-center gap-3 mt-auto pt-3 border-t border-base-300">
                             <div class="avatar placeholder">
                                 <div class="w-6 h-6 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">АК</div>
                             </div>
-                            <span class="text-xs font-semibold text-neutral">Анна Козлова</span>
+
+                            <span class="text-xs font-semibold text-neutral">{{ $s->author->aboutUser->name }} {{ $s->author->aboutUser->surname  }} </span>
                             <div class="flex items-center gap-3 ml-auto text-xs text-base-content/40">
                                 <span>❤️ 48</span>
                                 <span>💬 12</span>
@@ -297,207 +304,9 @@
                     </div>
                 </div>
             </a>
-
-            {{-- Article 2 --}}
-            <a href="#"
-               class="card bg-base-200 border border-base-300 overflow-hidden article-card
-                      hover:shadow-lg hover:border-accent/30 transition-all duration-250
-                      animate-fade-up delay-2 group"
-               style="--accent-color: #4E8EA2;">
-                <div class="card-body p-0 flex flex-row items-stretch gap-0">
-                    <div class="w-1 bg-accent flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity rounded-l-2xl"></div>
-                    <div class="w-36 md:w-48 flex-shrink-0 relative overflow-hidden"
-                         style="background: linear-gradient(135deg, #e8f5f8 0%, #c8e8ef 100%);">
-                        <span class="absolute inset-0 flex items-center justify-center text-5xl opacity-30">🐶</span>
-                    </div>
-                    <div class="flex-1 p-5 flex flex-col gap-2">
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <div class="badge badge-soft badge-accent text-xs font-bold">Питание</div>
-                            <span class="text-xs text-base-content/40">12 мин чтения</span>
-                            <span class="text-xs text-base-content/40 ml-auto">5 часов назад</span>
-                        </div>
-                        <h3 class="font-display text-lg font-bold text-neutral leading-snug group-hover:text-accent transition-colors">
-                            Сырое питание для собак: мифы и реальность в 2025 году
-                        </h3>
-                        <p class="text-sm text-base-content/60 leading-relaxed line-clamp-2">
-                            Много споров, мало фактов. Мы собрали актуальные исследования и мнения ветеринаров-диетологов
-                            о натуральном рационе для собак разных пород и возрастов.
-                        </p>
-                        <div class="flex items-center gap-3 mt-auto pt-3 border-t border-base-300">
-                            <div class="avatar placeholder">
-                                <div class="w-6 h-6 rounded-full bg-accent text-white text-xs font-bold flex items-center justify-center">МС</div>
-                            </div>
-                            <span class="text-xs font-semibold text-neutral">Михаил Семёнов</span>
-                            <div class="flex items-center gap-3 ml-auto text-xs text-base-content/40">
-                                <span>❤️ 93</span>
-                                <span>💬 34</span>
-                                <span>👁 1.2K</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-
-            {{-- Article 3 --}}
-            <a href="#"
-               class="card bg-base-200 border border-base-300 overflow-hidden article-card
-                      hover:shadow-lg hover:border-success/30 transition-all duration-250
-                      animate-fade-up delay-3 group"
-               style="--accent-color: #10B981;">
-                <div class="card-body p-0 flex flex-row items-stretch gap-0">
-                    <div class="w-1 bg-success flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity rounded-l-2xl"></div>
-                    <div class="w-36 md:w-48 flex-shrink-0 relative overflow-hidden"
-                         style="background: linear-gradient(135deg, #e6faf3 0%, #c5f0e1 100%);">
-                        <span class="absolute inset-0 flex items-center justify-center text-5xl opacity-30">🐰</span>
-                    </div>
-                    <div class="flex-1 p-5 flex flex-col gap-2">
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <div class="badge badge-soft badge-success text-xs font-bold">Уход</div>
-                            <span class="text-xs text-base-content/40">7 мин чтения</span>
-                            <span class="text-xs text-base-content/40 ml-auto">вчера</span>
-                        </div>
-                        <h3 class="font-display text-lg font-bold text-neutral leading-snug group-hover:text-success transition-colors">
-                            5 признаков того, что вашему кролику нужна срочная помощь
-                        </h3>
-                        <p class="text-sm text-base-content/60 leading-relaxed line-clamp-2">
-                            Кролики умеют скрывать боль — это инстинкт. Узнайте, на какие симптомы нужно обращать
-                            внимание каждый день, чтобы не пропустить начало болезни.
-                        </p>
-                        <div class="flex items-center gap-3 mt-auto pt-3 border-t border-base-300">
-                            <div class="avatar placeholder">
-                                <div class="w-6 h-6 rounded-full bg-success text-white text-xs font-bold flex items-center justify-center">ЕВ</div>
-                            </div>
-                            <span class="text-xs font-semibold text-neutral">Елена Васильева</span>
-                            <div class="flex items-center gap-3 ml-auto text-xs text-base-content/40">
-                                <span>❤️ 61</span>
-                                <span>💬 8</span>
-                                <span>👁 540</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-
-            {{-- Article 4 --}}
-            <a href="#"
-               class="card bg-base-200 border border-base-300 overflow-hidden article-card
-                      hover:shadow-lg hover:border-warning/30 transition-all duration-250
-                      animate-fade-up delay-4 group"
-               style="--accent-color: #F59E0B;">
-                <div class="card-body p-0 flex flex-row items-stretch gap-0">
-                    <div class="w-1 bg-warning flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity rounded-l-2xl"></div>
-                    <div class="w-36 md:w-48 flex-shrink-0 relative overflow-hidden"
-                         style="background: linear-gradient(135deg, #fef9ed 0%, #fdedc5 100%);">
-                        <span class="absolute inset-0 flex items-center justify-center text-5xl opacity-30">🦜</span>
-                    </div>
-                    <div class="flex-1 p-5 flex flex-col gap-2">
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <div class="badge badge-soft badge-warning text-xs font-bold">🦜 Птицы</div>
-                            <span class="text-xs text-base-content/40">9 мин чтения</span>
-                            <span class="text-xs text-base-content/40 ml-auto">2 дня назад</span>
-                        </div>
-                        <h3 class="font-display text-lg font-bold text-neutral leading-snug group-hover:text-warning transition-colors">
-                            Как научить попугая говорить: проверенные методики от орнитологов
-                        </h3>
-                        <p class="text-sm text-base-content/60 leading-relaxed line-clamp-2">
-                            Обучение попугая говорить требует терпения и системного подхода. Делимся методиками,
-                            которые действительно работают, и объясняем, почему одни птицы учатся быстрее других.
-                        </p>
-                        <div class="flex items-center gap-3 mt-auto pt-3 border-t border-base-300">
-                            <div class="avatar placeholder">
-                                <div class="w-6 h-6 rounded-full bg-warning text-white text-xs font-bold flex items-center justify-center">ИП</div>
-                            </div>
-                            <span class="text-xs font-semibold text-neutral">Игорь Петров</span>
-                            <div class="flex items-center gap-3 ml-auto text-xs text-base-content/40">
-                                <span>❤️ 74</span>
-                                <span>💬 21</span>
-                                <span>👁 890</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-
-            {{-- Article 5 --}}
-            <a href="#"
-               class="card bg-base-200 border border-base-300 overflow-hidden article-card
-                      hover:shadow-lg hover:border-error/30 transition-all duration-250
-                      animate-fade-up delay-5 group"
-               style="--accent-color: #EF4444;">
-                <div class="card-body p-0 flex flex-row items-stretch gap-0">
-                    <div class="w-1 bg-error flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity rounded-l-2xl"></div>
-                    <div class="w-36 md:w-48 flex-shrink-0 relative overflow-hidden"
-                         style="background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);">
-                        <span class="absolute inset-0 flex items-center justify-center text-5xl opacity-30">🐠</span>
-                    </div>
-                    <div class="flex-1 p-5 flex flex-col gap-2">
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <div class="badge badge-soft badge-error text-xs font-bold">🐠 Рыбки</div>
-                            <span class="text-xs text-base-content/40">6 мин чтения</span>
-                            <span class="text-xs text-base-content/40 ml-auto">3 дня назад</span>
-                        </div>
-                        <h3 class="font-display text-lg font-bold text-neutral leading-snug group-hover:text-error transition-colors">
-                            Аквариум для начинающих: 10 ошибок, которые убивают рыбок
-                        </h3>
-                        <p class="text-sm text-base-content/60 leading-relaxed line-clamp-2">
-                            Многие новички теряют питомцев в первые недели. Разбираем самые частые ошибки
-                            при запуске аквариума и рассказываем, как их избежать с минимальными вложениями.
-                        </p>
-                        <div class="flex items-center gap-3 mt-auto pt-3 border-t border-base-300">
-                            <div class="avatar placeholder">
-                                <div class="w-6 h-6 rounded-full bg-error text-white text-xs font-bold flex items-center justify-center">НД</div>
-                            </div>
-                            <span class="text-xs font-semibold text-neutral">Наталья Демидова</span>
-                            <div class="flex items-center gap-3 ml-auto text-xs text-base-content/40">
-                                <span>❤️ 55</span>
-                                <span>💬 17</span>
-                                <span>👁 710</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-
-            {{-- Article 6 --}}
-            <a href="#"
-               class="card bg-base-200 border border-base-300 overflow-hidden article-card
-                      hover:shadow-lg hover:border-primary/30 transition-all duration-250
-                      animate-fade-up delay-6 group"
-               style="--accent-color: #4976F0;">
-                <div class="card-body p-0 flex flex-row items-stretch gap-0">
-                    <div class="w-1 bg-primary flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity rounded-l-2xl"></div>
-                    <div class="w-36 md:w-48 flex-shrink-0 relative overflow-hidden"
-                         style="background: linear-gradient(135deg, #eef3ff 0%, #dce8ff 100%);">
-                        <span class="absolute inset-0 flex items-center justify-center text-5xl opacity-30">🐈</span>
-                    </div>
-                    <div class="flex-1 p-5 flex flex-col gap-2">
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <div class="badge badge-soft badge-primary text-xs font-bold">🐱 Кошки</div>
-                            <span class="text-xs text-base-content/40">4 мин чтения</span>
-                            <span class="text-xs text-base-content/40 ml-auto">4 дня назад</span>
-                        </div>
-                        <h3 class="font-display text-lg font-bold text-neutral leading-snug group-hover:text-primary transition-colors">
-                            Почему кошка мурлычет и что это на самом деле значит
-                        </h3>
-                        <p class="text-sm text-base-content/60 leading-relaxed line-clamp-2">
-                            Мурлыканье — это не просто знак довольства. Учёные выяснили, что кошки используют
-                            этот звук для общения, самоисцеления и манипуляций с хозяевами.
-                        </p>
-                        <div class="flex items-center gap-3 mt-auto pt-3 border-t border-base-300">
-                            <div class="avatar placeholder">
-                                <div class="w-6 h-6 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">АК</div>
-                            </div>
-                            <span class="text-xs font-semibold text-neutral">Анна Козлова</span>
-                            <div class="flex items-center gap-3 ml-auto text-xs text-base-content/40">
-                                <span>❤️ 128</span>
-                                <span>💬 43</span>
-                                <span>👁 3.1K</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-
+            @empty
+                <div class="text-center">Еще никто не добавил никакой статьи</div>
+            @endforelse
         </div>{{-- end articles list --}}
 
 

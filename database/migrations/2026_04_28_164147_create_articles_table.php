@@ -15,15 +15,15 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('title');
-            $table->string('slug')->unique();
             $table->text('excerpt')->nullable();
             $table->longText('body');
-            $table->string('cover_image')->nullable();
+            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
+            $table->string('image')->nullable();
             $table->boolean('is_featured')->default(false);
             $table->unsignedSmallInteger('reading_time');
             $table->enum('status', ['published', 'pending', 'draft', 'rejected'])->default('pending');
             $table->timestamp('published_at')->nullable();
-            $table->unsignedBigInteger('views_count')->default(0);
+            $table->unsignedBigInteger('views_count')->default(0)->nullable();
             $table->timestamps();
         });
     }

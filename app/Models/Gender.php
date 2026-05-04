@@ -9,4 +9,9 @@ class Gender extends Model
     protected $fillable = [
         'gender'
     ];
+
+    public function aboutUsers()
+    {
+        return $this->hasMany(AboutUser::class);
+    }
 }
