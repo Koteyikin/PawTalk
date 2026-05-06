@@ -298,7 +298,7 @@
                             <div class="flex items-center gap-3 ml-auto text-xs text-base-content/40">
                                 <span>❤️ 48</span>
                                 <span>💬 12</span>
-                                <span>👁 320</span>
+                                <span>👁 {{ $s->reading_time }}</span>
                             </div>
                         </div>
                     </div>
@@ -377,4 +377,42 @@
         </div>
     </div>
 </footer>
+<script>
+    async function toggleLike(btn, type, id) {
+        // Если не авторизован — редиректим
+        @guest
+            window.location = '{{ route("login.store") }}'
+        return
+        @endguest
+
+            try {
+            const res = await fetch('{{ route("likes.toggle") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ type, id })
+            })
+
+            const data = await res.json()
+
+            // Обновляем счётчик
+            btn.querySelector('.like-count').textContent = data.count
+
+            // Меняем стиль кнопки
+            if (data.liked) {
+                btn.classList.add('text-error')
+                btn.classList.remove('text-base-content/35')
+            } else {
+                btn.classList.remove('text-error')
+                btn.classList.add('text-base-content/35')
+            }
+
+        } catch (e) {
+            console.error('Ошибка лайка:', e)
+        }
+    }
+</script>
 @endsection

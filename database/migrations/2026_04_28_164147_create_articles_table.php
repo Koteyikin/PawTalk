@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('excerpt')->nullable();
             $table->longText('body');
+            $table->unsignedInteger('comments_count')->default(0);
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
             $table->string('image')->nullable();
             $table->boolean('is_featured')->default(false);

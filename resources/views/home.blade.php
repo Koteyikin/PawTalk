@@ -155,27 +155,30 @@
         </div>
 
         {{-- Bottom stats --}}
-        <div class="absolute bottom-10 z-10 flex items-center gap-8 md:gap-12">
-            <div class="text-center">
-                <div class="font-display text-3xl font-bold text-white">12K+</div>
-                <div class="text-white/50 text-xs uppercase tracking-widest mt-1">Пользователей</div>
+        @foreach(\App\Models\SiteStat::all() as $stat)
+            <div class="absolute bottom-10 z-10 flex items-center gap-8 md:gap-12">
+                <div class="text-center">
+                    <div class="font-display text-3xl font-bold text-white">{{ $stat->users_count }}</div>
+                    <div class="text-white/50 text-xs uppercase tracking-widest mt-1">Пользователей</div>
+                </div>
+                <div class="w-px h-10 bg-white/15"></div>
+                <div class="text-center">
+                    <div class="font-display text-3xl font-bold text-white">8.4K</div>
+                    <div class="text-white/50 text-xs uppercase tracking-widest mt-1">Питомцев</div>
+                </div>
+                <div class="w-px h-10 bg-white/15"></div>
+                <div class="text-center">
+                    <div class="font-display text-3xl font-bold text-white">{{ $stat->cities_count }}</div>
+                    <div class="text-white/50 text-xs uppercase tracking-widest mt-1">Городов</div>
+                </div>
+                <div class="w-px h-10 bg-white/15"></div>
+                <div class="text-center">
+                    <div class="font-display text-3xl font-bold text-white">{{ $stat->articles_count }}</div>
+                    <div class="text-white/50 text-xs uppercase tracking-widest mt-1">Статей</div>
+                </div>
             </div>
-            <div class="w-px h-10 bg-white/15"></div>
-            <div class="text-center">
-                <div class="font-display text-3xl font-bold text-white">8.4K</div>
-                <div class="text-white/50 text-xs uppercase tracking-widest mt-1">Питомцев</div>
-            </div>
-            <div class="w-px h-10 bg-white/15"></div>
-            <div class="text-center">
-                <div class="font-display text-3xl font-bold text-white">340+</div>
-                <div class="text-white/50 text-xs uppercase tracking-widest mt-1">Городов</div>
-            </div>
-            <div class="w-px h-10 bg-white/15"></div>
-            <div class="text-center">
-                <div class="font-display text-3xl font-bold text-white">5K</div>
-                <div class="text-white/50 text-xs uppercase tracking-widest mt-1">Статей</div>
-            </div>
-        </div>
+        @endforeach
+
     </section>
 
 
@@ -325,89 +328,30 @@
                     <p class="text-primary text-xs font-bold uppercase tracking-[0.14em] mb-2">Лента активностей</p>
                     <h2 class="font-display text-4xl font-bold text-neutral mb-2 leading-tight">Последние статьи</h2>
                     <p class="text-base-content/60 text-sm leading-relaxed mb-8">Свежие материалы от нашего сообщества</p>
-
-                    {{-- Post 1 --}}
-                    <div class="card bg-base-200 border border-base-300 mb-4 overflow-hidden
+                    @foreach(\App\Models\Article::all() as $s)
+                        <div class="card bg-base-200 border border-base-300 mb-4 overflow-hidden
                             hover:translate-x-1 hover:shadow-md transition-all duration-200 flex flex-row">
-                        <div class="post-card-border" style="background:#4976F0;"></div>
-                        <div class="card-body p-5 gap-3">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <div class="avatar placeholder">
-                                    <div class="w-7 h-7 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">АК</div>
+                            <div class="post-card-border" style="background:#4976F0;"></div>
+                            <div class="card-body p-5 gap-3">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <div class="avatar placeholder">
+                                        <div class="w-7 h-7 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center">АК</div>
+                                    </div>
+                                    <span class="text-sm font-semibold text-neutral">{{ $s->author->aboutUser->name }} {{ $s->author->aboutUser->surname }}</span>
+                                    <div class="badge badge-soft badge-primary text-xs">{{ $s->tag }}</div>
+                                    <span class="text-xs text-base-content/40 ml-auto">2 часа назад</span>
                                 </div>
-                                <span class="text-sm font-semibold text-neutral">Анна Козлова</span>
-                                <div class="badge badge-soft badge-primary text-xs">Здоровье</div>
-                                <span class="text-xs text-base-content/40 ml-auto">2 часа назад</span>
-                            </div>
-                            <h4 class="font-display text-base font-bold text-neutral leading-snug">
-                                Как подготовить кошку к первому визиту к ветеринару
-                            </h4>
-                            <p class="text-sm text-base-content/60 leading-relaxed line-clamp-2">
-                                Первый поход к врачу — стресс для любого питомца. Рассказываем, как сделать этот опыт спокойным и даже приятным для вашей кошки...
-                            </p>
-                            <div class="flex items-center gap-4 pt-2 border-t border-base-300 text-xs text-base-content/40">
-                                <span>❤️ 48</span>
-                                <span>💬 12</span>
-                                <span>👁 320</span>
+                                <h4 class="font-display text-base font-bold text-neutral leading-snug">{{ $s->title }}</h4>
+                                <p class="text-sm text-base-content/60 leading-relaxed line-clamp-2">{{ $s->excerpt }}</p>
+                                <div class="flex items-center gap-4 pt-2 border-t border-base-300 text-xs text-base-content/40">
+                                    <span>❤️ 48</span>
+                                    <span>💬 12</span>
+                                    <span>👁 {{ $s->reding_time }}</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    {{-- Post 2 --}}
-                    <div class="card bg-base-200 border border-base-300 mb-4 overflow-hidden
-                            hover:translate-x-1 hover:shadow-md transition-all duration-200 flex flex-row">
-                        <div class="post-card-border" style="background:#4E8EA2;"></div>
-                        <div class="card-body p-5 gap-3">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <div class="avatar placeholder">
-                                    <div class="w-7 h-7 rounded-full bg-accent text-white text-xs font-bold flex items-center justify-center">МС</div>
-                                </div>
-                                <span class="text-sm font-semibold text-neutral">Михаил Семёнов</span>
-                                <div class="badge badge-soft badge-accent text-xs">Питание</div>
-                                <span class="text-xs text-base-content/40 ml-auto">5 часов назад</span>
-                            </div>
-                            <h4 class="font-display text-base font-bold text-neutral leading-snug">
-                                Сырое питание для собак: мифы и реальность в 2025 году
-                            </h4>
-                            <p class="text-sm text-base-content/60 leading-relaxed line-clamp-2">
-                                Много споров, мало фактов. Мы собрали актуальные исследования и мнения ветеринаров-диетологов о натуральном рационе для собак...
-                            </p>
-                            <div class="flex items-center gap-4 pt-2 border-t border-base-300 text-xs text-base-content/40">
-                                <span>❤️ 93</span>
-                                <span>💬 34</span>
-                                <span>👁 1.2K</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Post 3 --}}
-                    <div class="card bg-base-200 border border-base-300 mb-6 overflow-hidden
-                            hover:translate-x-1 hover:shadow-md transition-all duration-200 flex flex-row">
-                        <div class="post-card-border" style="background:#10B981;"></div>
-                        <div class="card-body p-5 gap-3">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <div class="avatar placeholder">
-                                    <div class="w-7 h-7 rounded-full bg-success text-white text-xs font-bold flex items-center justify-center">ЕВ</div>
-                                </div>
-                                <span class="text-sm font-semibold text-neutral">Елена Васильева</span>
-                                <div class="badge badge-soft badge-success text-xs">Уход</div>
-                                <span class="text-xs text-base-content/40 ml-auto">вчера</span>
-                            </div>
-                            <h4 class="font-display text-base font-bold text-neutral leading-snug">
-                                5 признаков того, что вашему кролику нужна срочная помощь
-                            </h4>
-                            <p class="text-sm text-base-content/60 leading-relaxed line-clamp-2">
-                                Кролики умеют скрывать боль — это инстинкт. Узнайте, на какие симптомы нужно обращать внимание каждый день...
-                            </p>
-                            <div class="flex items-center gap-4 pt-2 border-t border-base-300 text-xs text-base-content/40">
-                                <span>❤️ 61</span>
-                                <span>💬 8</span>
-                                <span>👁 540</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <a href="#"
+                    @endforeach
+                    <a href="{{ route('articles.index') }}"
                        class="btn btn-outline btn-primary rounded-full px-8 hover:shadow-lg">
                         Все статьи →
                     </a>
@@ -421,16 +365,9 @@
                         <div class="card-body gap-3">
                             <h5 class="text-xs font-bold uppercase tracking-[0.1em] text-base-content/40">Популярные темы</h5>
                             <div class="flex flex-wrap gap-2">
-                                <span class="badge badge-ghost hover:badge-primary cursor-pointer transition-colors">🐱 Кошки</span>
-                                <span class="badge badge-ghost hover:badge-primary cursor-pointer transition-colors">🐶 Собаки</span>
-                                <span class="badge badge-ghost hover:badge-primary cursor-pointer transition-colors">🐰 Кролики</span>
-                                <span class="badge badge-ghost hover:badge-primary cursor-pointer transition-colors">🦜 Птицы</span>
-                                <span class="badge badge-ghost hover:badge-primary cursor-pointer transition-colors">🐠 Рыбки</span>
-                                <span class="badge badge-ghost hover:badge-primary cursor-pointer transition-colors">Питание</span>
-                                <span class="badge badge-ghost hover:badge-primary cursor-pointer transition-colors">Здоровье</span>
-                                <span class="badge badge-ghost hover:badge-primary cursor-pointer transition-colors">Воспитание</span>
-                                <span class="badge badge-ghost hover:badge-primary cursor-pointer transition-colors">Уход</span>
-                                <span class="badge badge-ghost hover:badge-primary cursor-pointer transition-colors">Вакцинация</span>
+                                @foreach(\App\Models\Tag::all() as $tag)
+                                    <span class="badge badge-ghost hover:badge-primary cursor-pointer transition-colors">{{ $tag->name }}</span>
+                                @endforeach
                             </div>
                         </div>
                     </div>

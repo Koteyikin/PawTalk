@@ -15,12 +15,19 @@
                             </div>
                         </div>
                     </div>
+
                 <div class="pt-14 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
-                        <h1 class="text-3xl font-bold" style="color: oklch(27.807% 0.029 256.847);"></h1>
+                        <h1 class="text-3xl font-bold" style="color: oklch(27.807% 0.029 256.847);">
+                            {{ $about->name ?? '' }} {{ $about->surname ?? '' }}
+                        </h1>
                         <div class="flex flex-wrap gap-2 mt-1 items-center">
-                            <span class="badge badge-primary gap-1 text-xs" style="background: #4976F0; border: none; color: white;">{{ $about?->status->name ?? 'Статус не выбран' }}</span>
-                            <span class="text-xs opacity-70">Присоединился:{{ auth()->user()?->created_at ?? 'Пока еще не известно'}}</span>
+                            <span class="badge badge-primary gap-1 text-xs" style="background: #4976F0; border: none; color: white;">
+                                {{ $about?->status->name ?? 'Статус не выбран' }}
+                            </span>
+                            <span class="text-xs opacity-70">
+                                Присоединился: {{ auth()->user()?->created_at ?? 'Пока еще не известно' }}
+                            </span>
                         </div>
                     </div>
                     <div class="flex gap-2">

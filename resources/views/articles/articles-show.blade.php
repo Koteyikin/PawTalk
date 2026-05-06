@@ -1,7 +1,6 @@
 @extends('layouts.main')
 @section('title', 'Просмотр статьи')
 @section('body')
-
     <style>
         :root {
             --color-base-100: oklch(96% 0.003 264.542);
@@ -126,8 +125,6 @@
         }
         .animate-in { animation: fadeIn 0.6s ease both; }
     </style>
-    <body class="bg-base-100 text-base-content">
-
     {{-- Reading progress bar --}}
     <div id="progress-bar"></div>
     {{-- ══════════════════════════════ --}}
@@ -148,40 +145,65 @@
                 <ul>
                     <li><a href="{{ route('home.index') }}" class="hover:text-white/70">Главная</a></li>
                     <li><a href="{{ route('articles.index') }}" class="hover:text-white/70">Статьи</a></li>
-                    <li class="text-white/60">Здоровье</li>
+                    <li class="text-white/60">{{ $articles->category->name ?? 'Статья' }}</li>
                 </ul>
             </div>
-            {{-- Category & reading time --}}
-            <div class="flex items-center gap-3 mb-5 flex-wrap">
-                <div class="badge badge-primary text-white border-none font-bold">
-                    @foreach($articles->tags as $tag)
-                        <span class="badge">{{ $tag->name }}</span>
-                    @endforeach
-                <div class="badge bg-white/15 text-white border-none">{{ $articles->category->name }}</div>
-                <span class="text-white/40 text-xs">{{ $articles->reading_time }}</span>
+
+            {{-- Теги + время чтения --}}
+            <div class="flex items-center gap-2 mb-4 flex-wrap">
+                @foreach($articles->tags as $tag)
+                    <span class="badge badge-primary text-white border-none font-bold text-xs">
+                {{ $tag->name }}
+            </span>
+                @endforeach
+                <span class="badge bg-white/15 text-white border-none text-xs">
+            {{ $articles->category->name ?? '—' }}
+        </span>
+                <span class="text-white/40 text-xs ml-1">
+            {{ $articles->reading_time }} мин чтения
+        </span>
             </div>
 
-            {{-- Title --}}
-            <h1 class="font-display text-3xl md:text-4xl lg:text-5xl font-black text-white leading-tight mb-6">
+            {{-- Заголовок --}}
+            <h1 class="font-display text-3xl md:text-4xl lg:text-5xl font-black text-white leading-tight mb-8">
                 {{ $articles->title }}
             </h1>
 
-            {{-- Author + meta --}}
-            <div class="flex items-center gap-4 flex-wrap">
+            {{-- Автор + метрики --}}
+            <div class="flex items-center justify-between gap-4 flex-wrap">
+
+                {{-- Автор --}}
                 <div class="flex items-center gap-3">
                     <div class="avatar placeholder">
-                        <div class="w-11 h-11 rounded-full bg-primary text-white font-bold flex items-center justify-center text-sm">АК</div>
+                        <div class="w-11 h-11 rounded-full bg-primary text-white font-bold
+                            flex items-center justify-center text-sm flex-shrink-0">
+                            {{ mb_strtoupper(mb_substr($articles->author->aboutUser->name ?? 'А', 0, 1)) }}
+                        </div>
                     </div>
                     <div>
-                        <div class="text-white font-semibold text-sm">{{ $articles->author->aboutUser->name }} {{ $articles->author->aboutUser->surname }}</div>
-                        <div class="text-white/40 text-xs">{{ $articles->created_at }}</div>
+                        <div class="text-white font-semibold text-sm">
+                            {{ $articles->author->aboutUser->name ?? '—' }}
+                            {{ $articles->author->aboutUser->surname ?? '' }}
+                        </div>
+                        <div class="text-white/40 text-xs">
+                            {{ $articles->created_at->diffForHumans() }}
+                        </div>
                     </div>
                 </div>
-                <div class="flex items-center gap-5 ml-auto text-white/50 text-sm">
-                    <span>❤️ 48</span>
-                    <span>💬 12</span>
-                    <span>👁 320</span>
+
+                {{-- Метрики --}}
+                <div class="flex items-center gap-4 text-white/50 text-sm">
+            <span class="flex items-center gap-1">
+                ❤️ <span>{{ $articles->likes()->count() }}</span>
+            </span>
+                    <span class="flex items-center gap-1">
+                💬 <span>{{ $articles->comments_count }}</span>
+            </span>
+                    <span class="flex items-center gap-1">
+                👁 <span>{{ $articles->views_count }}</span>
+            </span>
                 </div>
+
             </div>
         </div>
     </div>
@@ -201,8 +223,7 @@
                     <p class="text-base leading-relaxed text-base-content/80 font-light mb-8 text-lg
                            border-l-4 border-primary pl-5 py-1"
                        style="font-family: 'Playfair Display', serif; font-style: italic;">
-                        Первый поход к ветеринару — это стресс не только для питомца, но и для хозяина.
-                        Расскажем, как подготовиться, чтобы визит прошёл максимально спокойно для обеих сторон.
+                        {{ $articles->excerpt }}
                     </p>
 
                     {{-- Article body --}}
@@ -220,8 +241,11 @@
 
                     {{-- Actions --}}
                     <div class="flex items-center gap-3 mt-6 flex-wrap">
-                        <button class="btn btn-sm btn-outline btn-error rounded-full gap-2 hover:scale-105 transition-transform">
-                            ❤️ Нравится <span class="font-bold">48</span>
+                        <button
+                            onclick="toggleLike(this, 'article', {{ $articles->id }})"
+                            class="btn btn-sm rounded-full gap-2 transition-all {{ $articles->likes()->where('user_id', auth()->id())->exists() ? 'btn-error text-white border-none' : 'btn-outline border-base-300 text-base-content/50' }}"
+                            data-liked="{{ $articles->likes()->where('user_id', auth()->id())->exists() ? 'true' : 'false' }}">
+                            ❤️ <span class="like-count">{{ $articles->likes()->count() }}</span>
                         </button>
                         <button class="btn btn-sm btn-outline rounded-full gap-2">
                             🔗 Поделиться
@@ -240,15 +264,11 @@
                             </div>
                             <div class="flex-1">
                                 <div class="text-xs font-bold uppercase tracking-widest text-base-content/40 mb-1">Об авторе</div>
-                                <div class="font-display font-bold text-lg text-neutral">Анна Козлова</div>
+                                <div class="font-display font-bold text-lg text-neutral">{{ $articles->author->aboutUser->name ?? 'Анонимный' }} {{  $articles->author->aboutUser->surname ?? 'автор' }}</div>
                                 <p class="text-sm text-base-content/60 leading-relaxed mt-1">
-                                    Ветеринарный фелинолог с 8-летним стажем. Хозяйка трёх кошек.
-                                    Пишет о здоровье и поведении кошек простым языком.
+                                    {{  $articles->author->aboutUser->descrition ?? 'Автор решил остаться анонимным'  }}
                                 </p>
                             </div>
-                            <a href="#" class="btn btn-sm btn-outline btn-primary rounded-full flex-shrink-0">
-                                Все статьи
-                            </a>
                         </div>
                     </div>
 
@@ -285,7 +305,7 @@
                             </div>
                         </form>
 
-                        @foreach($articles->comments as $comment)
+                        @foreach($articles->comments->whereNull('parent_id') as $comment)
                             <div class="flex gap-3 mb-5">
                                 <div class="avatar placeholder flex-shrink-0">
                                     <div class="w-9 h-9 rounded-full bg-accent text-white font-bold flex items-center justify-center text-xs">
@@ -304,12 +324,73 @@
                                                     {{ $comment->created_at->diffForHumans() }}
                                                 </span>
                                             </div>
-                                                <p class="text-sm text-base-content/70 leading-relaxed">{{ $comment->body }}</p>
+                                            <p class="text-sm text-base-content/70 leading-relaxed">
+                                                {{ $comment->body }}
+                                            </p>
                                             <div class="flex items-center gap-3 text-xs text-base-content/35 mt-1">
-                                                <button  class="hover:text-primary transition-colors">❤️ 7</button>
+                                                <button
+                                                    onclick="toggleLike(this, 'comment', {{ $comment->id }})"
+                                                    class="hover:text-error transition-colors flex items-center gap-1"
+                                                    data-liked="{{ $comment->likes()->where('user_id', auth()->id())->exists() ? 'true' : 'false' }}">
+                                                    ❤️ <span class="like-count">{{ $comment->likes()->count() }}</span>
+                                                </button>
+                                                <button type="button"
+                                                        onclick="document.getElementById('reply-{{ $comment->id }}').classList.toggle('hidden')"
+                                                        class="hover:text-primary transition-colors">
+                                                    💬 Ответить
+                                                </button>
+                                            </div>
+                                            {{-- Форма ответа --}}
+                                            <div id="reply-{{ $comment->id }}" class="hidden mt-3">
+                                                <form method="POST" action="{{ route('comments.store') }}">
+                                                    @csrf
+                                                    <input type="hidden" name="article_id" value="{{ $articles->id }}">
+                                                    <input type="hidden" name="user_id"    value="{{ auth()->id() }}">
+                                                    <input type="hidden" name="parent_id"  value="{{ $comment->id }}">
+                                                    <input type="hidden" name="is_approved" value="0">
+                                                    <div class="flex flex-col gap-2">
+                                                        <textarea name="body" rows="2" placeholder="Ваш ответ..." class="textarea bg-base-100 border border-base-300 rounded-xl text-sm resize-none focus:border-primary focus:outline-none w-full" required></textarea>
+                                                        <div class="flex gap-2 justify-end">
+                                                            <button type="button" onclick="document.getElementById('reply-{{ $comment->id }}').classList.add('hidden')" class="btn btn-xs btn-ghost rounded-full">
+                                                                Отмена
+                                                            </button>
+                                                            <button type="submit" class="btn btn-xs btn-primary rounded-full text-white border-none">
+                                                                Отправить
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
+
+                                    {{-- Ответы --}}
+                                    @foreach($comment->replies as $reply)
+                                        <div class="flex gap-3 mt-2 ml-8">
+                                            <div class="avatar placeholder flex-shrink-0">
+                                                <div class="w-7 h-7 rounded-full bg-primary text-white font-bold flex items-center justify-center text-xs">
+                                                    {{ mb_strtoupper(mb_substr($reply->author->aboutUser->name ?? 'А', 0, 1)) }}
+                                                </div>
+                                            </div>
+                                            <div class="flex-1">
+                                                <div class="card bg-base-100 border border-base-300">
+                                                    <div class="card-body p-3 gap-1">
+                                                        <div class="flex items-center gap-2">
+                                                            <span class="text-xs font-semibold text-neutral">
+                                                                {{ $reply->author->aboutUser->name ?? '—' }}
+                                                                {{ $reply->author->aboutUser->surname ?? '' }}
+                                                            </span>
+                                                            <span class="text-xs text-base-content/35">
+                                                                {{ $reply->created_at->diffForHumans() }}
+                                                            </span>
+                                                        </div>
+                                                        <p class="text-sm text-base-content/70">{{ $reply->body }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+
                                 </div>
                             </div>
                         @endforeach
@@ -318,9 +399,7 @@
                             Показать ещё 10 комментариев
                         </button>
                     </div>
-
                 </article>
-
 
                 {{-- ── SIDEBAR ── --}}
                 <aside class="flex flex-col gap-5 lg:sticky lg:top-24 animate-in">
@@ -412,45 +491,20 @@
                    class="btn btn-sm btn-outline btn-primary rounded-full">Все статьи →</a>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-
-                <a href="#"
-                   class="card bg-base-100 border border-base-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-250 group">
-                    <div class="h-32 rounded-t-2xl flex items-center justify-center text-5xl"
-                         style="background: linear-gradient(135deg,#fef9ed,#fdedc5);">🦜</div>
-                    <div class="card-body p-5 gap-2">
-                        <div class="badge badge-soft badge-warning text-xs w-fit">🦜 Птицы</div>
-                        <h4 class="font-display font-bold text-base text-neutral group-hover:text-primary transition-colors line-clamp-2 leading-snug">
-                            Как научить попугая говорить: проверенные методики
-                        </h4>
-                        <p class="text-xs text-base-content/40">9 мин · 74 ❤️</p>
-                    </div>
-                </a>
-
-                <a href="#"
-                   class="card bg-base-100 border border-base-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-250 group">
-                    <div class="h-32 rounded-t-2xl flex items-center justify-center text-5xl"
-                         style="background: linear-gradient(135deg,#fef2f2,#fecaca);">🐠</div>
-                    <div class="card-body p-5 gap-2">
-                        <div class="badge badge-soft badge-error text-xs w-fit">🐠 Рыбки</div>
-                        <h4 class="font-display font-bold text-base text-neutral group-hover:text-primary transition-colors line-clamp-2 leading-snug">
-                            Аквариум для начинающих: 10 ошибок, которые убивают рыбок
-                        </h4>
-                        <p class="text-xs text-base-content/40">6 мин · 55 ❤️</p>
-                    </div>
-                </a>
-
-                <a href="#"
-                   class="card bg-base-100 border border-base-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-250 group">
-                    <div class="h-32 rounded-t-2xl flex items-center justify-center text-5xl"
-                         style="background: linear-gradient(135deg,#e8f5f8,#c8e8ef);">🐶</div>
-                    <div class="card-body p-5 gap-2">
-                        <div class="badge badge-soft badge-accent text-xs w-fit">Питание</div>
-                        <h4 class="font-display font-bold text-base text-neutral group-hover:text-primary transition-colors line-clamp-2 leading-snug">
-                            Сырое питание для собак: мифы и реальность в 2025 году
-                        </h4>
-                        <p class="text-xs text-base-content/40">12 мин · 93 ❤️</p>
-                    </div>
-                </a>
+                @foreach(\App\Models\Article::all() as $s)
+                    <a href="{{ route('articles.show', $s->id) }}"
+                       class="card bg-base-100 border border-base-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-250 group">
+                        <div class="h-32 rounded-t-2xl flex items-center justify-center text-5xl"
+                             style="background: linear-gradient(135deg,#fef9ed,#fdedc5);">🦜</div>
+                        <div class="card-body p-5 gap-2">
+                            <div class="badge badge-soft badge-warning text-xs w-fit">🦜 {{ $s->category->name }}</div>
+                            <h4 class="font-display font-bold text-base text-neutral group-hover:text-primary transition-colors line-clamp-2 leading-snug">
+                                {{ $s->title }}
+                            </h4>
+                            <p class="text-xs text-base-content/40">{{ $s->reding_time }} · 74 ❤️</p>
+                        </div>
+                    </a>
+                @endforeach
 
             </div>
         </div>
@@ -471,10 +525,44 @@
             </div>
         </div>
     </footer>
-
-
     {{-- Progress bar script --}}
     <script>
+        async function toggleLike(btn, type, id) {
+            // Если не авторизован — редиректим
+            @guest
+                window.location = '{{ route("login.store") }}'
+            return
+            @endguest
+
+                try {
+                const res = await fetch('{{ route("likes.toggle") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({ type, id })
+                })
+
+                const data = await res.json()
+
+                // Обновляем счётчик
+                btn.querySelector('.like-count').textContent = data.count
+
+                // Меняем стиль кнопки
+                if (data.liked) {
+                    btn.classList.add('text-error')
+                    btn.classList.remove('text-base-content/35')
+                } else {
+                    btn.classList.remove('text-error')
+                    btn.classList.add('text-base-content/35')
+                }
+
+            } catch (e) {
+                console.error('Ошибка лайка:', e)
+            }
+        }
         window.addEventListener('scroll', () => {
             const doc = document.documentElement;
             const scrollTop = doc.scrollTop || document.body.scrollTop;

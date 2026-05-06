@@ -31,7 +31,7 @@ class comments extends Model
 
     public function replies()
     {
-        return $this->hasMany(comments::class, 'parent_id');
+        return $this->hasMany(comments::class, 'parent_id')->with('author.aboutUser');
     }
 
     public function likes()

@@ -12,7 +12,8 @@ class ArticleFunctionController extends Controller
 {
     public function show($id)
     {
-        $articles = Article::with(['author.aboutUser', 'category', 'tags', 'comments.author.aboutUser',])->findOrFail($id);
+        $articles = Article::with(['author.aboutUser', 'category', 'tags', 'comments.author.aboutUser', 'comments' => fn($q) => $q->whereNull('parent_id')
+            ->with(['author.aboutUser', 'replies.author.aboutUser'])])->findOrFail($id);
         $articles->increment('views_count');
         return view('articles.articles-show', compact('articles'));
     }
@@ -26,9 +27,8 @@ class ArticleFunctionController extends Controller
             'excerpt' => 'required|max:255',
             'body' => 'required',
             'category_id' => 'required',
-
             'tags' => 'required|array',
-
+            'comments_count' => 'nullable|integer',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
 //            'is_featured' => 'boolean',
             'published_at' => 'nullable|date',

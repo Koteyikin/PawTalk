@@ -2,18 +2,22 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Notifications\Notifiable;
 
 class Article extends Model
 {
+    use HasFactory, Notifiable;
     protected $table = 'articles';
 
     protected $fillable = [
         'title',
         'user_id',
         'excerpt',
+        'comments_count',
         'body',
         'category_id',
         'image',
@@ -33,6 +37,7 @@ class Article extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
 
     public function tags()
     {
