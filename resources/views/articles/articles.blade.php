@@ -134,7 +134,7 @@
             </div>
             <div class="w-px bg-white/15 self-stretch"></div>
             <div class="text-center">
-                <div class="font-display text-2xl font-bold text-white">48K</div>
+                <div class="font-display text-2xl font-bold text-white"></div>
                 <div class="text-white/40 text-xs uppercase tracking-wide">Прочтений</div>
             </div>
         </div>
