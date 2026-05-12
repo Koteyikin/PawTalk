@@ -9,15 +9,17 @@ use App\Filament\Resources\Articles\Schemas\ArticleForm;
 use App\Filament\Resources\Articles\Tables\ArticlesTable;
 use App\Models\Article;
 use BackedEnum;
-use UnitEnum;
+use Filament\Actions\ViewAction;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use App\Filament\Resources\Articles\Pages\ViewArticle;
+use UnitEnum;
 
 class ArticleResource extends Resource
 {
-    protected static string | UnitEnum | null $navigationGroup = 'Пользователи';
+    protected static string | UnitEnum | null $navigationGroup = 'Статьи';
 
     protected static ?string $model = Article::class;
 
@@ -48,6 +50,7 @@ class ArticleResource extends Resource
             'index' => ListArticles::route('/'),
             'create' => CreateArticle::route('/create'),
             'edit' => EditArticle::route('/{record}/edit'),
+            'view' => ViewArticle::route('/{record}'),
         ];
     }
 }

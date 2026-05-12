@@ -1,11 +1,59 @@
 @extends('layouts.main')
 @section('title', 'Профиль')
 @section('body')
-    <div class="max-w-6xl mx-auto px-4 py-8 md:py-12">
+<div class="min-h-screen bg-[#f4f7fb]">
+    <div class="max-w-6xl mx-auto px-4 pb-12">
         <!-- Карточка профиля с аватаркой и обложкой в стиле daisyUI -->
         <div class="rounded-box bg-base-100 shadow-xl overflow-hidden" style="background-color: var(--color-base-100, oklch(100% 0 0)); --color-base-100: oklch(100% 0 0);">
             <!-- Шапка профиля с обложкой -->
-            <div class="relative h-36 md:h-48 bg-gradient-to-r from-[#4976F0] to-[#4E8EA2]"></div>
+            <div class="relative h-36 md:h-48 bg-gradient-to-r from-[#4976F0] to-[#4E8EA2]">
+                <div class="absolute top-5 left-5 right-5 z-50 flex items-center justify-between">
+
+                    {{-- Logo --}}
+                    <a href="{{ route('home.index') }}"
+                       class="flex items-center gap-3 text-white font-black text-2xl
+              backdrop-blur-xl bg-white/10 border border-white/10
+              px-5 py-3 rounded-2xl shadow-2xl hover:bg-white/15 transition-all">
+
+                        <span class="text-2xl">🐾</span>
+                        <span class="hidden md:block">PawTalk</span>
+                    </a>
+                    {{-- Navigation --}}
+                    <div class="flex items-center gap-3">
+
+                        <a href="{{ route('articles.index') }}"
+                           class="btn rounded-2xl border-none text-white
+                  bg-white/10 backdrop-blur-xl hover:bg-white/20
+                  shadow-xl px-5">
+                            📰 Статьи
+                        </a>
+
+                        <a href="{{ route('profile.index') }}"
+                           class="btn rounded-2xl border-none text-white
+                  bg-[#4976F0]/90 hover:bg-[#4976F0]
+                  shadow-xl px-5">
+                            👤 Профиль
+                        </a>
+
+                        @if(auth()->user()->role === 'admin')
+                            <a href="/admin"
+                               class="btn rounded-2xl border-none text-white
+                      bg-red-500 hover:bg-red-600 shadow-xl">
+                                👑
+                            </a>
+                        @endif
+
+                        @if(auth()->user()->role === 'moderator')
+                            <a href="/moderator"
+                               class="btn rounded-2xl border-none text-white
+                      bg-emerald-500 hover:bg-emerald-600 shadow-xl">
+                                🛡️
+                            </a>
+                        @endif
+
+                    </div>
+                </div>
+            </div>
             <div class="relative px-6 pb-6">
                 <!-- Аватар -->
                     <div class="absolute -top-12 left-6">
@@ -30,16 +78,26 @@
                             </span>
                         </div>
                     </div>
-                    <div class="flex gap-2">
-                        <button class="btn btn-sm gap-1" style="background: #F59E0B; border: none; color: #1f2937;">✉ Создать статью</button>
-                    </div>
+{{--                    <div class="flex gap-2">--}}
+{{--                        <button class="btn btn-sm gap-1" style="background: #F59E0B; border: none; color: #1f2937;">✉ Создать статью</button>--}}
+{{--                        @if(auth()->user()->role === 'admin')--}}
+{{--                            <a href="/admin" class="btn btn-sm gap-1" style="background: #dc2626; border: none; color: white;">--}}
+{{--                                👑 Админ панель--}}
+{{--                            </a>--}}
+{{--                        @endif--}}
+{{--                        @if(auth()->user()->role === 'moder')--}}
+{{--                            <a href="/moderator" class="btn btn-sm gap-1" style="background: #10b981; border: none; color: white;">--}}
+{{--                                🛡️ Модерация--}}
+{{--                            </a>--}}
+{{--                        @endif--}}
+{{--                    </div>--}}
                 </div>
             </div>
 
             <!-- name of each tab group should be unique -->
             <!-- name of each tab group should be unique -->
             <div class="tabs  p-6">
-                <input type="radio" name="my_tabs_6" class="tab" aria-label="Tab 1" checked="checked" />
+                <input type="radio" name="my_tabs_6" class="tab" aria-label="Профиль" checked="checked" />
 
                 <div id="profileTab" class="tab-content transition-all duration-200">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -84,7 +142,7 @@
                 </div>
 
 
-                <input type="radio" name="my_tabs_6" class="tab" aria-label="Tab 2" />
+                <input type="radio" name="my_tabs_6" class="tab" aria-label="Любимые животные" />
                 <div id="profileTab" class="tab-content bg-base-100 border-base-300 p-6">
                     <div class="p-6 bg-[#f5f6fa]">
                         <div class="max-w-3xl mx-auto">
@@ -160,8 +218,178 @@
                         </div>
                     </div>
                 </div>
+                {{-- Вкладка 4: Мои статьи --}}
+                <input type="radio" name="my_tabs_6" class="tab" aria-label="Мои статьи" />
+                <div class="tab-content bg-base-100 border-base-300 p-6">
+                    <div class="max-w-3xl mx-auto">
+                        <h2 class="text-lg font-bold text-[#1a1d23] mb-5">Мои статьи</h2>
 
+                        @php
+                            $myArticles = \App\Models\Article::where('user_id', auth()->id())
+                                            ->with('category')
+                                            ->latest()
+                                            ->get();
+                        @endphp
 
-                <input type="radio" name="my_tabs_6" class="tab" aria-label="Tab 3"  />
-                <div id="profileTab" class="tab-content transition-all duration-200">kasjdfsdjkf</div>
+                        @if($myArticles->isEmpty())
+                            <div class="alert">Вы ещё не написали ни одной статьи</div>
+                        @else
+                            <div class="flex flex-col gap-4">
+                                @foreach($myArticles as $article)
+                                    <div class="card bg-white border border-[#e8eaf0] rounded-2xl p-5
+                                hover:shadow-md transition-all">
+                                        <div class="flex items-start justify-between gap-4 flex-wrap">
+                                            <div class="flex-1">
+                                                <div class="flex items-center gap-2 mb-2 flex-wrap">
+                                                    {{-- Статус --}}
+                                                    <span class="badge text-xs font-bold
+                                        {{ match($article->status) {
+                                            'published' => 'bg-green-100 text-green-700 border-green-200',
+                                            'pending'   => 'bg-yellow-100 text-yellow-700 border-yellow-200',
+                                            'draft'     => 'bg-gray-100 text-gray-600 border-gray-200',
+                                            'rejected'  => 'bg-red-100 text-red-600 border-red-200',
+                                            default     => 'bg-gray-100 text-gray-600',
+                                        } }}">
+                                        {{ match($article->status) {
+                                            'published' => '✅ Опубликована',
+                                            'pending'   => '⏳ На проверке',
+                                            'draft'     => '📝 Черновик',
+                                            'rejected'  => '❌ Отклонена',
+                                            default     => $article->status,
+                                        } }}
+                                    </span>
+
+                                                    {{-- Категория --}}
+                                                    @if($article->category)
+                                                        <span class="badge badge-outline text-xs"
+                                                              style="border-color: #4976F0; color: #4976F0;">
+                                            {{ $article->category->name }}
+                                        </span>
+                                                    @endif
+
+                                                    <span class="text-xs text-gray-400">
+                                        {{ $article->created_at->diffForHumans() }}
+                                    </span>
+                                                </div>
+
+                                                <h3 class="font-bold text-base text-[#1a1d23] mb-1">
+                                                    {{ $article->title }}
+                                                </h3>
+
+                                                <p class="text-sm text-gray-500 line-clamp-2">
+                                                    {{ $article->excerpt }}
+                                                </p>
+
+                                                {{-- Причина отказа --}}
+                                                @if(in_array($article->status, ['rejected', 'draft']) && $article->reject_reason)
+                                                    <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-xl">
+                                                        <p class="text-xs font-semibold text-red-600 mb-1">
+                                                            💬 Причина от модератора:
+                                                        </p>
+                                                        <p class="text-sm text-red-500">
+                                                            {{ $article->reject_reason }}
+                                                        </p>
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            {{-- Метрики --}}
+                                            <div class="flex flex-col items-end gap-2 text-xs text-gray-400 flex-shrink-0">
+                                                <span>👁 {{ $article->views_count }}</span>
+                                                <span>💬 {{ $article->comments->count() }}</span>
+                                                @if($article->status === 'published')
+                                                    <a href="{{ route('articles.show', $article->id) }}"
+                                                       class="btn btn-xs btn-outline rounded-full"
+                                                       style="border-color: #4976F0; color: #4976F0;">
+                                                        Читать →
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                </div>
+                {{-- Вкладка 5: Избранное --}}
+                <input type="radio" name="my_tabs_6" class="tab" aria-label="Избранное" />
+                <div class="tab-content bg-base-100 border-base-300 p-6">
+                    <div class="max-w-3xl mx-auto">
+                        <h2 class="text-lg font-bold text-[#1a1d23] mb-5">Избранные статьи</h2>
+
+                        @php
+                            $bookmarks = \App\Models\Bookmarks::where('user_id', auth()->id())
+                                            ->with(['article.author.aboutUser', 'article.category'])
+                                            ->latest()
+                                            ->get();
+                        @endphp
+
+                        @if($bookmarks->isEmpty())
+                            <div class="alert">Вы ещё не добавили статьи в избранное</div>
+                        @else
+                            <div class="flex flex-col gap-4">
+                                @foreach($bookmarks as $bookmark)
+                                    @php $article = $bookmark->article; @endphp
+                                    @if($article)
+                                        <div class="card bg-white border border-[#e8eaf0] rounded-2xl overflow-hidden
+                                    hover:shadow-lg hover:border-[#c5d2f8] transition-all flex flex-row">
+
+                                            <div class="flex-1 p-5">
+                                                <div class="flex items-center gap-2 mb-2 flex-wrap">
+                                                    @if($article->category)
+                                                        <span class="badge text-xs font-bold"
+                                                              style="background: #eef3ff; color: #4976F0; border-color: #c5d2f8;">
+                                            {{ $article->category->name }}
+                                        </span>
+                                                    @endif
+                                                    <span class="text-xs text-gray-400">
+                                        {{ $article->created_at->diffForHumans() }}
+                                    </span>
+                                                </div>
+
+                                                <h3 class="font-bold text-base text-[#1a1d23] mb-1 line-clamp-1">
+                                                    {{ $article->title }}
+                                                </h3>
+
+                                                <p class="text-sm text-gray-500 line-clamp-2 mb-3">
+                                                    {{ $article->excerpt }}
+                                                </p>
+
+                                                <div class="flex items-center justify-between">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold"
+                                                             style="background: #4976F0;">
+                                                            {{ mb_strtoupper(mb_substr($article->author->aboutUser->name ?? 'А', 0, 1)) }}
+                                                        </div>
+                                                        <span class="text-xs text-gray-500">
+                                            {{ $article->author->aboutUser->name ?? '—' }}
+                                        </span>
+                                                    </div>
+
+                                                    <div class="flex items-center gap-3">
+                                                        <span class="text-xs text-gray-400">👁 {{ $article->views_count }}</span>
+
+                                                        <a href="{{ route('articles.show', $article->id) }}"
+                                                           class="btn btn-xs rounded-full text-white border-none"
+                                                           style="background: #4976F0;">
+                                                            Читать →
+                                                        </a>
+
+                                                        {{-- Убрать из избранного --}}
+                                                        <button onclick="toggleBookmark({{ $article->id }}, this)"
+                                                                class="btn btn-xs btn-ghost text-red-400 hover:bg-red-50 rounded-lg">
+                                                            🗑
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
 @endsection

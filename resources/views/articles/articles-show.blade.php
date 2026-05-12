@@ -247,12 +247,42 @@
                             data-liked="{{ $articles->likes()->where('user_id', auth()->id())->exists() ? 'true' : 'false' }}">
                             ❤️ <span class="like-count">{{ $articles->likes()->count() }}</span>
                         </button>
-                        <button class="btn btn-sm btn-outline rounded-full gap-2">
-                            🔗 Поделиться
-                        </button>
-                        <button class="btn btn-sm btn-ghost rounded-full gap-2 text-base-content/40">
-                            🚩 Пожаловаться
-                        </button>
+                        @auth
+                            <button id="bookmark-btn" onclick="toggleBookmark({{ $articles->id }})" class="btn btn-sm rounded-full gap-2 transition-all
+                                {{ \App\Models\Bookmarks::where('user_id', auth()->id())->where('article_id', $articles->id)->exists() ? 'btn-warning text-white border-none' : 'btn-outline border-base-300 text-base-content/50' }}">
+                                🔖 <span id="bookmark-label">
+                                {{ \App\Models\Bookmarks::where('user_id', auth()->id())->where('article_id', $articles->id)->exists() ? 'В избранном' : 'В избранное' }}
+                                    </span>
+                            </button>
+                            <script>
+                                async function toggleBookmark(articleId) {
+                                    const btn   = document.getElementById('bookmark-btn')
+                                    const label = document.getElementById('bookmark-label')
+
+                                    const res = await fetch('{{ route("bookmarks.toggle") }}', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                            'Accept': 'application/json',
+                                        },
+                                        body: JSON.stringify({ article_id: articleId })
+                                    })
+
+                                    const data = await res.json()
+
+                                    if (data.bookmarked) {
+                                        btn.classList.remove('btn-outline', 'border-base-300', 'text-base-content/50')
+                                        btn.classList.add('btn-warning', 'text-white', 'border-none')
+                                        label.textContent = 'В избранном'
+                                    } else {
+                                        btn.classList.remove('btn-warning', 'text-white', 'border-none')
+                                        btn.classList.add('btn-outline', 'border-base-300', 'text-base-content/50')
+                                        label.textContent = 'В избранное'
+                                    }
+                                }
+                            </script>
+                        @endauth
                     </div>
 
 

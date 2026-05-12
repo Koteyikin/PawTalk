@@ -49,6 +49,10 @@ class User extends Authenticatable implements FilamentUser, HasName
         return $this->hasOne(AboutUser::class);
     }
 
+    public function profileFull()
+    {
+        return $this->aboutUser && !empty($this->aboutUser);
+    }
 
     public function articles() : HasMany
     {
@@ -75,9 +79,9 @@ class User extends Authenticatable implements FilamentUser, HasName
         return $this->hasMany(Notification::class);
     }
 
-    public function role()
+    public function animals(): HasMany
     {
-        return $this->belongsTo(Role::class);
+        return $this->hasMany(Animal::class);
     }
 
 

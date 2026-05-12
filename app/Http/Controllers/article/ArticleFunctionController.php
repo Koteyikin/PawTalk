@@ -37,13 +37,17 @@ class ArticleFunctionController extends Controller
             'views_count' => 'nullable|string',
         ]);
         // обработка картинки
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(storage_path('app/public/articles'), $filename);
-            $validated['image'] = 'articles/' . $filename;
-        }
+//        if ($request->hasFile('image')) {
+//            $file = $request->file('image');
+//            $filename = time() . '_' . $file->getClientOriginalName();
+//            $file->move(storage_path('app/public/articles'), $filename);
+//            $validated['image'] = 'articles/' . $filename;
+//        }
 
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')
+                ->store('articles', 'public');
+        }
         // вытаскиваем теги
         $tags = $validated['tags'];
         unset($validated['tags']);

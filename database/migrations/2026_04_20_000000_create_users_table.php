@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->text('nickname');
             $table->text('email');
+            $table->enum('role', ['admin', 'user', 'moder'])->default('user');
             $table->text('password')->nullable();
-//            $table->foreignId('role_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
 

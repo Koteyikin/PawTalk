@@ -12,9 +12,6 @@ class Category extends Model
     use HasFactory, Notifiable;
     protected $fillable = [
         'name',
-        'slug',
-        'color',
-        'icon',
     ];
 
     public function article()

@@ -1,3 +1,4 @@
+@php use App\Models\User; @endphp
 @extends('layouts.main')
 @section('title', 'Главная страничка')
 @section('body')
@@ -130,7 +131,7 @@
 
 
         {{-- Hero content --}}
-        <div class="relative z-10 text-center max-w-2xl px-6 animate-hero">
+        <div class="relative z-10 text-center max-w-2xl px-8 mt-8 animate-hero">
             <div class="badge badge-outline border-[#4976F0]/50 text-[#a8c0ff] bg-[#4976F0]/20 mb-6 px-4 py-3 text-xs font-bold uppercase tracking-widest">
                 Социальная сеть для владельцев животных
             </div>
@@ -155,30 +156,6 @@
         </div>
 
         {{-- Bottom stats --}}
-        @foreach(\App\Models\SiteStat::all() as $stat)
-            <div class="absolute bottom-10 z-10 flex items-center gap-8 md:gap-12">
-                <div class="text-center">
-                    <div class="font-display text-3xl font-bold text-white">{{ $stat->users_count }}</div>
-                    <div class="text-white/50 text-xs uppercase tracking-widest mt-1">Пользователей</div>
-                </div>
-                <div class="w-px h-10 bg-white/15"></div>
-                <div class="text-center">
-                    <div class="font-display text-3xl font-bold text-white">8.4K</div>
-                    <div class="text-white/50 text-xs uppercase tracking-widest mt-1">Питомцев</div>
-                </div>
-                <div class="w-px h-10 bg-white/15"></div>
-                <div class="text-center">
-                    <div class="font-display text-3xl font-bold text-white">{{ $stat->cities_count }}</div>
-                    <div class="text-white/50 text-xs uppercase tracking-widest mt-1">Городов</div>
-                </div>
-                <div class="w-px h-10 bg-white/15"></div>
-                <div class="text-center">
-                    <div class="font-display text-3xl font-bold text-white">{{ $stat->articles_count }}</div>
-                    <div class="text-white/50 text-xs uppercase tracking-widest mt-1">Статей</div>
-                </div>
-            </div>
-        @endforeach
-
     </section>
 
 
@@ -328,7 +305,7 @@
                     <p class="text-primary text-xs font-bold uppercase tracking-[0.14em] mb-2">Лента активностей</p>
                     <h2 class="font-display text-4xl font-bold text-neutral mb-2 leading-tight">Последние статьи</h2>
                     <p class="text-base-content/60 text-sm leading-relaxed mb-8">Свежие материалы от нашего сообщества</p>
-                    @foreach(\App\Models\Article::all() as $s)
+                    @foreach(\App\Models\Article::where('status', 'published')->latest()->take(3)->get() as $s)
                         <div class="card bg-base-200 border border-base-300 mb-4 overflow-hidden
                             hover:translate-x-1 hover:shadow-md transition-all duration-200 flex flex-row">
                             <div class="post-card-border" style="background:#4976F0;"></div>
@@ -344,8 +321,8 @@
                                 <h4 class="font-display text-base font-bold text-neutral leading-snug">{{ $s->title }}</h4>
                                 <p class="text-sm text-base-content/60 leading-relaxed line-clamp-2">{{ $s->excerpt }}</p>
                                 <div class="flex items-center gap-4 pt-2 border-t border-base-300 text-xs text-base-content/40">
-                                    <span>❤️ 48</span>
-                                    <span>💬 12</span>
+                                    <span>❤️ {{ $s->likes()->count() }}</span>
+                                    <span>💬 {{ $s->comments_count }}</span>
                                     <span>👁 {{ $s->reding_time }}</span>
                                 </div>
                             </div>
@@ -365,64 +342,53 @@
                         <div class="card-body gap-3">
                             <h5 class="text-xs font-bold uppercase tracking-[0.1em] text-base-content/40">Популярные темы</h5>
                             <div class="flex flex-wrap gap-2">
-                                @foreach(\App\Models\Tag::all() as $tag)
+                                @foreach(\App\Models\Tag::inRandomOrder()->take(10)->get() as $tag)
                                     <span class="badge badge-ghost hover:badge-primary cursor-pointer transition-colors">{{ $tag->name }}</span>
                                 @endforeach
                             </div>
                         </div>
                     </div>
-
+                    @php
+                        $topAuthors = User::with('aboutUser')->withCount('articles')->having('articles_count', '>', 0)->orderBy('articles_count', 'desc')->take(4)->get();
+                    @endphp
                     {{-- Top authors --}}
                     <div class="card bg-base-200 border border-base-300">
                         <div class="card-body gap-3">
                             <h5 class="text-xs font-bold uppercase tracking-[0.1em] text-base-content/40">Активные авторы</h5>
+                            @if($topAuthors->isEmpty())
+                                <p class="text-sm text-base-content/40">
+                                    Пока нет активных авторов
+                                </p>
+                            @else
+                            @foreach($topAuthors as $index => $author)
+                                <div class="flex items-center gap-3 py-2
+                                    {{ !$loop->last ? 'border-b border-base-300' : '' }}">
+                                    {{-- Avatar --}}
+                                    <div class="avatar placeholder">
+                                        <div class="w-9 h-9 rounded-full bg-primary text-white text-sm font-bold flex items-center justify-center">
+                                            {{ mb_strtoupper(mb_substr($author->aboutUser->name ?? 'А', 0, 1)) }}
+                                        </div>
+                                    </div>
+                                    {{-- User info --}}
+                                    <div class="flex-1">
+                                        <div class="text-sm font-semibold text-neutral">
+                                            {{ $author->aboutUser->name ?? '—' }}
+                                            {{ $author->aboutUser->surname ?? '' }}
+                                        </div>
+                                        <div class="text-xs text-base-content/40">
+                                            {{ $author->articles_count }} статей
+                                        </div>
+                                    </div>
 
-                            <div class="flex items-center gap-3 py-2 border-b border-base-300">
-                                <div class="avatar placeholder">
-                                    <div class="w-9 h-9 rounded-full bg-primary text-white text-sm font-bold flex items-center justify-center">АК</div>
+                                    {{-- Rank --}}
+                                    <span class="text-sm font-bold text-primary">
+                                        #{{ $index + 1 }}
+                                    </span>
                                 </div>
-                                <div class="flex-1">
-                                    <div class="text-sm font-semibold text-neutral">Анна Козлова</div>
-                                    <div class="text-xs text-base-content/40">24 статьи</div>
-                                </div>
-                                <span class="text-sm font-bold text-primary">#1</span>
-                            </div>
-
-                            <div class="flex items-center gap-3 py-2 border-b border-base-300">
-                                <div class="avatar placeholder">
-                                    <div class="w-9 h-9 rounded-full bg-accent text-white text-sm font-bold flex items-center justify-center">МС</div>
-                                </div>
-                                <div class="flex-1">
-                                    <div class="text-sm font-semibold text-neutral">Михаил Семёнов</div>
-                                    <div class="text-xs text-base-content/40">18 статей</div>
-                                </div>
-                                <span class="text-sm font-bold text-primary">#2</span>
-                            </div>
-
-                            <div class="flex items-center gap-3 py-2 border-b border-base-300">
-                                <div class="avatar placeholder">
-                                    <div class="w-9 h-9 rounded-full bg-success text-white text-sm font-bold flex items-center justify-center">ЕВ</div>
-                                </div>
-                                <div class="flex-1">
-                                    <div class="text-sm font-semibold text-neutral">Елена Васильева</div>
-                                    <div class="text-xs text-base-content/40">15 статей</div>
-                                </div>
-                                <span class="text-sm font-bold text-primary">#3</span>
-                            </div>
-
-                            <div class="flex items-center gap-3 py-2">
-                                <div class="avatar placeholder">
-                                    <div class="w-9 h-9 rounded-full bg-warning text-white text-sm font-bold flex items-center justify-center">ИП</div>
-                                </div>
-                                <div class="flex-1">
-                                    <div class="text-sm font-semibold text-neutral">Игорь Петров</div>
-                                    <div class="text-xs text-base-content/40">11 статей</div>
-                                </div>
-                                <span class="text-sm font-bold text-primary">#4</span>
-                            </div>
+                            @endforeach
+                            @endif
                         </div>
                     </div>
-
                     {{-- CTA mini --}}
                     <div class="card border border-primary/20" style="background: linear-gradient(135deg, #eef3ff 0%, #f0f8ff 100%);">
                         <div class="card-body gap-3">
@@ -456,42 +422,40 @@
             </p>
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+                @foreach(\App\Models\SiteStat::all() as $stat)
 
                 <div class="card border border-white/10 bg-white/[0.06] hover:bg-white/10 hover:-translate-y-1 transition-all duration-200">
                     <div class="card-body items-center text-center gap-2 p-6">
                         <span class="text-3xl mb-1">👥</span>
-                        <div class="font-display text-4xl font-black text-white">12<span class="text-2xl">K+</span></div>
+                        <div class="font-display text-4xl font-black text-white">{{ $stat->users_count }}</div>
                         <div class="text-white/50 text-xs font-medium leading-snug">Пользователей на сайте</div>
-                        <div class="text-success text-xs font-bold mt-1">↑ +340 за месяц</div>
                     </div>
                 </div>
 
                 <div class="card border border-white/10 bg-white/[0.06] hover:bg-white/10 hover:-translate-y-1 transition-all duration-200">
                     <div class="card-body items-center text-center gap-2 p-6">
                         <span class="text-3xl mb-1">🐾</span>
-                        <div class="font-display text-4xl font-black text-white">8.4<span class="text-2xl">K</span></div>
+                        <div class="font-display text-4xl font-black text-white">{{ $stat->animal_count }}</div>
                         <div class="text-white/50 text-xs font-medium leading-snug">Питомцев зарегистрировано</div>
-                        <div class="text-success text-xs font-bold mt-1">↑ +210 за месяц</div>
                     </div>
                 </div>
 
                 <div class="card border border-white/10 bg-white/[0.06] hover:bg-white/10 hover:-translate-y-1 transition-all duration-200">
                     <div class="card-body items-center text-center gap-2 p-6">
                         <span class="text-3xl mb-1">📝</span>
-                        <div class="font-display text-4xl font-black text-white">5<span class="text-2xl">K+</span></div>
+                        <div class="font-display text-4xl font-black text-white">{{ $stat->articles_count }}</div>
                         <div class="text-white/50 text-xs font-medium leading-snug">Статей и постов</div>
-                        <div class="text-success text-xs font-bold mt-1">↑ +120 за месяц</div>
                     </div>
                 </div>
 
                 <div class="card border border-white/10 bg-white/[0.06] hover:bg-white/10 hover:-translate-y-1 transition-all duration-200">
                     <div class="card-body items-center text-center gap-2 p-6">
                         <span class="text-3xl mb-1">🏙️</span>
-                        <div class="font-display text-4xl font-black text-white">340<span class="text-2xl">+</span></div>
+                        <div class="font-display text-4xl font-black text-white">{{ $stat->cities_count }}</div>
                         <div class="text-white/50 text-xs font-medium leading-snug">Городов-участников</div>
-                        <div class="text-success text-xs font-bold mt-1">↑ +18 за месяц</div>
                     </div>
                 </div>
+                @endforeach
 
             </div>
         </div>
@@ -522,7 +486,7 @@
                             <input type="email" placeholder="Ваш email..."
                                    class="input join-item bg-white/10 border-white/20 text-white placeholder-white/40
                                       focus:outline-none focus:border-primary min-w-[200px]" />
-                            <a href="#"
+                            <a href="#"  onclick="my_modal_2.showModal()"
                                class="btn btn-primary join-item border-none text-white">
                                 Начать
                             </a>

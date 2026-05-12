@@ -10,6 +10,7 @@ class Animal extends Model
     protected $fillable = [
         'name',
         'age',
+        'user_id',
         'picture',
         'description',
         'status_animal_id',

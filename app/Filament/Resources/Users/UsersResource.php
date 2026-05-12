@@ -6,8 +6,6 @@ use App\Filament\Resources\Users\Pages\CreateUsers;
 use App\Filament\Resources\Users\Pages\EditUsers;
 use App\Filament\Resources\Users\Pages\ListUsers;
 use App\Filament\Resources\Users\Pages\ViewUser;
-use App\Filament\Resources\Users\RelationManagers\AboutUserRelationManager;
-use App\Filament\Resources\Users\RelationManagers\ArticleRelationManager;
 use App\Filament\Resources\Users\Schemas\UsersForm;
 use App\Filament\Resources\Users\Tables\UsersTable;
 use App\Models\User;
@@ -32,7 +30,7 @@ class UsersResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $recordTitleAttribute = 'User';
+    protected static ?string $recordTitleAttribute = 'Пользователи';
 
     public static function form(Schema $schema): Schema
     {

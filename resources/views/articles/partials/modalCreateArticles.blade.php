@@ -142,46 +142,6 @@
                     @endforeach
                 </div>
             </div>
-
-            {{-- Обложка --}}
-            <div class="form-control gap-1.5">
-                <label class="text-xs font-bold uppercase tracking-widest text-base-content/50">
-                    Обложка статьи
-                </label>
-                <label class="flex flex-col items-center justify-center gap-2 cursor-pointer
-                               border-2 border-dashed border-base-300 rounded-2xl p-6
-                               hover:border-primary/50 hover:bg-primary/5 transition-all group"
-                       id="cover-label">
-                    <span class="text-3xl group-hover:scale-110 transition-transform" id="cover-icon">🖼️</span>
-                    <span class="text-sm text-base-content/50 group-hover:text-primary transition-colors" id="cover-text">
-                        Нажмите для загрузки обложки
-                    </span>
-                    <span class="text-xs text-base-content/30">PNG, JPG до 2MB</span>
-                    <input type="file" name="image" accept="image/*" class="hidden"/>
-                </label>
-            </div>
-
-            {{-- Инфо о модерации --}}
-            <div class="flex items-start gap-3 p-4 bg-info/10 border border-info/20 rounded-2xl">
-                <span class="text-lg mt-0.5 flex-shrink-0">ℹ️</span>
-                <div>
-                    <div class="text-sm font-semibold text-base-content/70">Проверка модератором</div>
-                    <div class="text-xs text-base-content/45 leading-relaxed mt-0.5">
-                        После отправки статья получит статус «На проверке». Вы получите уведомление,
-                        когда модератор одобрит или отклонит её.
-                    </div>
-                </div>
-            </div>
-             @if ($errors->any())
-                 <div style="color:red;">
-                     @foreach ($errors->all() as $error)
-                         <div>{{ $error }}</div>
-                     @endforeach
-                 </div>
-             @endif
-        </form>
-
-        {{-- ── FOOTER ── --}}
         <div class="px-8 py-5 border-t border-base-300 bg-base-100 flex items-center justify-between gap-3">
             <button onclick="article_modal.close()"
                     class="btn btn-ghost btn-sm rounded-full px-6 text-base-content/50 hover:text-base-content">
@@ -206,5 +166,90 @@
                 </button>
             </div>
         </div>
+
+            {{-- Обложка --}}
+            <div class="form-control gap-1.5">
+                <label class="text-xs font-bold uppercase tracking-widest text-base-content/50">
+                    Обложка статьи
+                </label>
+                <label class="flex flex-col items-center justify-center gap-2 cursor-pointer
+                               border-2 border-dashed border-base-300 rounded-2xl p-6
+                               hover:border-primary/50 hover:bg-primary/5 transition-all group"
+                       id="cover-label">
+                    <span class="text-3xl group-hover:scale-110 transition-transform" id="cover-icon">🖼️</span>
+                    <span class="text-sm text-base-content/50 group-hover:text-primary transition-colors" id="cover-text">
+                        Нажмите для загрузки обложки
+                    </span>
+                    <span class="text-xs text-base-content/30">PNG, JPG до 2MB</span>
+                    <input type="file" name="image" accept="image/*" class="hidden"/>
+                </label>
+            </div>
+             {{-- Модалка предупреждения --}}
+             <dialog id="noProfile" class="modal">
+                 <div class="modal-box" style="background: white; border-radius: 1rem;">
+                     <form method="dialog">
+                         <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                     </form>
+
+                     <div class="text-center py-4">
+                         <!-- Иконка предупреждения -->
+                         <div class="flex justify-center mb-4">
+                             <div class="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center">
+                                 <svg class="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                           d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                 </svg>
+                             </div>
+                         </div>
+
+                         <!-- Текст предупреждения -->
+                         <h3 class="text-lg font-bold mb-2" style="color: #1f2937;">
+                             Профиль не заполнен!
+                         </h3>
+
+                         <p class="text-sm text-gray-600 mb-6">
+                             Для создания статьи необходимо сначала заполнить профиль:<br>
+                         </p>
+
+                         <!-- Кнопки действий -->
+                         <div class="flex gap-3 justify-center">
+                             <form method="dialog">
+                                 <button class="btn px-6" style="background: #9CA3AF; color: white; border: none;">
+                                     Закрыть
+                                 </button>
+                             </form>
+
+                             <a href="{{ route('profile.index') }}" class="btn px-6" style="background: #4976F0; color: white; border: none;">
+                                 Перейти в профиль
+                             </a>
+                         </div>
+                     </div>
+                 </div>
+
+                 <form method="dialog" class="modal-backdrop">
+                     <button>закрыть</button>
+                 </form>
+             </dialog>
+            {{-- Инфо о модерации --}}
+{{--            <div class="flex items-start gap-3 p-4 bg-info/10 border border-info/20 rounded-2xl">--}}
+{{--                <span class="text-lg mt-0.5 flex-shrink-0">ℹ️</span>--}}
+{{--                <div>--}}
+{{--                    <div class="text-sm font-semibold text-base-content/70">Проверка модератором</div>--}}
+{{--                    <div class="text-xs text-base-content/45 leading-relaxed mt-0.5">--}}
+{{--                        После отправки статья получит статус «На проверке». Вы получите уведомление,--}}
+{{--                        когда модератор одобрит или отклонит её.--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+             @if ($errors->any())
+                 <div style="color:red;">
+                     @foreach ($errors->all() as $error)
+                         <div>{{ $error }}</div>
+                     @endforeach
+                 </div>
+             @endif
+        </form>
+
+        {{-- ── FOOTER ── --}}
     </div>
 </dialog>

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('users_count')->default(0);
             $table->unsignedBigInteger('cities_count')->default(0);
+            $table->unsignedBigInteger('animal_count')->default(0);
             $table->unsignedBigInteger('articles_count')->default(0);
             $table->timestamps();
         });

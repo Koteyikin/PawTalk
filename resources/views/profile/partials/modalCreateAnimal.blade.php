@@ -9,8 +9,8 @@
 
         <form action="{{ route('profile.animal') }}" method="post" enctype="multipart/form-data">
             @csrf
+            <input type="hidden" value="{{ auth()->id() }}" name="user_id">
             <div class="flex flex-col gap-4">
-
                 <!-- Имя -->
                 <div>
                     <label class="block text-xs text-gray-500 font-medium mb-1.5">Кличка</label>

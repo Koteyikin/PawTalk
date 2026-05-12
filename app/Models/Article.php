@@ -17,6 +17,7 @@ class Article extends Model
         'title',
         'user_id',
         'excerpt',
+        'reject_reason',
         'comments_count',
         'body',
         'category_id',

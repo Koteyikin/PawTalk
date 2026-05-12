@@ -35,13 +35,9 @@ class ProfileController extends Controller
             'animal_id' => 'integer|exists:animals,id',
         ]);
 
-        if ($request->files->get('avatar')) {
-            $file = $request->files->get('avatar');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(storage_path('app/public/img'), $filename);
-            $validated['avatar'] = 'img/' . $filename;
-        } else {
-            $validated['avatar'] = null;
+        if ($request->hasFile('avatar')) {
+            $validated['avatar'] = $request->file('avatar')
+                ->store('img', 'public');
         }
 
         AboutUser::create($validated);
@@ -54,6 +50,7 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'age' => 'nullable|integer',
+            'user_id' => 'required|integer|exists:users,id',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
             'description' => 'nullable|string|max:255',
             'status_animal_id' => 'nullable|integer|exists:status_animals,id',
