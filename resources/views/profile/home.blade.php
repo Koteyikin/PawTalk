@@ -43,7 +43,7 @@
                             </a>
                         @endif
 
-                        @if(auth()->user()->role === 'moderator')
+                        @if(auth()->user()->role === 'moder')
                             <a href="/moderator"
                                class="btn rounded-2xl border-none text-white
                       bg-emerald-500 hover:bg-emerald-600 shadow-xl">

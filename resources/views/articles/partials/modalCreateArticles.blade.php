@@ -142,6 +142,24 @@
                     @endforeach
                 </div>
             </div>
+
+            {{-- Обложка --}}
+            <div class="form-control gap-1.5">
+                <label class="text-xs font-bold uppercase tracking-widest text-base-content/50">
+                    Обложка статьи
+                </label>
+                <label class="flex flex-col items-center justify-center gap-2 cursor-pointer
+                               border-2 border-dashed border-base-300 rounded-2xl p-6
+                               hover:border-primary/50 hover:bg-primary/5 transition-all group"
+                       id="cover-label">
+                    <span class="text-3xl group-hover:scale-110 transition-transform" id="cover-icon">🖼️</span>
+                    <span class="text-sm text-base-content/50 group-hover:text-primary transition-colors" id="cover-text">
+                        Нажмите для загрузки обложки
+                    </span>
+                    <span class="text-xs text-base-content/30">PNG, JPG до 2MB</span>
+                    <input type="file" name="image" accept="image/*" class="hidden"/>
+                </label>
+            </div>
         <div class="px-8 py-5 border-t border-base-300 bg-base-100 flex items-center justify-between gap-3">
             <button onclick="article_modal.close()"
                     class="btn btn-ghost btn-sm rounded-full px-6 text-base-content/50 hover:text-base-content">
@@ -166,24 +184,6 @@
                 </button>
             </div>
         </div>
-
-            {{-- Обложка --}}
-            <div class="form-control gap-1.5">
-                <label class="text-xs font-bold uppercase tracking-widest text-base-content/50">
-                    Обложка статьи
-                </label>
-                <label class="flex flex-col items-center justify-center gap-2 cursor-pointer
-                               border-2 border-dashed border-base-300 rounded-2xl p-6
-                               hover:border-primary/50 hover:bg-primary/5 transition-all group"
-                       id="cover-label">
-                    <span class="text-3xl group-hover:scale-110 transition-transform" id="cover-icon">🖼️</span>
-                    <span class="text-sm text-base-content/50 group-hover:text-primary transition-colors" id="cover-text">
-                        Нажмите для загрузки обложки
-                    </span>
-                    <span class="text-xs text-base-content/30">PNG, JPG до 2MB</span>
-                    <input type="file" name="image" accept="image/*" class="hidden"/>
-                </label>
-            </div>
              {{-- Модалка предупреждения --}}
              <dialog id="noProfile" class="modal">
                  <div class="modal-box" style="background: white; border-radius: 1rem;">

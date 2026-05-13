@@ -22,27 +22,44 @@ class ProfileController extends Controller
     public function create(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'surname' => 'nullable|string|max:255',
-            'contact' => 'required|string|max:255',
-            'gender_id' => 'nullable|integer|exists:genders,id',
-            'status_id' => 'nullable|integer|exists:statuses,id',
-            'interests' => 'nullable|string|max:255',
-            'city' => 'nullable|string|max:255',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
+            'name'        => 'required|string|max:255',
+            'surname'     => 'nullable|string|max:255',
+            'contact'     => 'required|string|max:255',
+            'gender_id'   => 'nullable|integer|exists:genders,id',
+            'status_id'   => 'nullable|integer|exists:statuses,id',
+            'interests'   => 'nullable|string|max:255',
+            'city'        => 'nullable|string|max:255',
+            'avatar'      => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
             'description' => 'nullable|string|max:255',
-            'user_id' => 'required|integer|exists:users,id',
-            'animal_id' => 'integer|exists:animals,id',
+            'user_id'     => 'required|integer|exists:users,id',
         ]);
 
+        // Сохраняем аватар через move() вместо store()
         if ($request->hasFile('avatar')) {
-            $validated['avatar'] = $request->file('avatar')
-                ->store('img', 'public');
+            $file      = $request->file('avatar');
+            $filename  = time() . '_' . $file->getClientOriginalName();
+            $directory = storage_path('app/public/img');
+
+            // Создаём папку если не существует
+            if (!file_exists($directory)) {
+                mkdir($directory, 0755, true);
+            }
+
+            $file->move($directory, $filename);
+            $validated['avatar'] = 'img/' . $filename;
+        } else {
+            unset($validated['avatar']);
         }
 
-        AboutUser::create($validated);
-        return redirect()->back();
-//        dd($request->all());
+        $existing = AboutUser::where('user_id', auth()->id())->first();
+
+        if ($existing) {
+            $existing->update($validated);
+        } else {
+            AboutUser::create($validated);
+        }
+
+        return redirect()->back()->with('success', 'Профиль сохранён!');
     }
 
     public function animal(Request $request)

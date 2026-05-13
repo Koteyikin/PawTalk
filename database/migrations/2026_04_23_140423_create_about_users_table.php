@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('contact');
             $table->string('interests')->nullable();
             $table->text('city');
-            $table->text('avatar');
+            $table->text('avatar')->nullable();
             $table->text('description');
             $table->foreignIdFor(\App\Models\Status::class)->constrained();
             $table->foreignIdFor(\App\Models\Gender::class)->constrained();

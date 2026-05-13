@@ -24,7 +24,7 @@
                 </a>
             </li>
             <li>
-                <a href="#"
+                <a href="{{ route('faq.index') }}"
                    class="text-white/70 hover:text-white hover:bg-white/10 rounded-full text-xs uppercase tracking-widest font-semibold">
                     FAQ
                 </a>
