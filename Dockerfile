@@ -7,9 +7,15 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
     nodejs \
-    npm
+    npm \
+    libicu-dev \
+    libcurl4-openssl-dev
 
-RUN docker-php-ext-install zip
+RUN docker-php-ext-install zip intl
+
+PECL_FIX=1 pecl install pecl_http
+
+RUN docker-php-ext-enable http
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
