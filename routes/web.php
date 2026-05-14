@@ -22,6 +22,7 @@ Route::post('/likes', [LikeController::class, 'toggle'])->name('likes.toggle');
 Route::post('/bookmarks', [BookmarkController::class, 'toggle'])->name('bookmarks.toggle');
 Route::get('/faq', [FaqController::class, 'index'])->name('faq.index');
 Route::post('/faq', [FaqController::class, 'store'])->name('faq.store');
+Route::get('/posts', [ArticleController::class, 'index'])->name('articles.search');
 Route::middleware('auth')->group(function () {
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');

@@ -12,9 +12,20 @@ class ArticleFunctionController extends Controller
 {
     public function show($id)
     {
-        $articles = Article::with(['author.aboutUser', 'category', 'tags', 'comments.author.aboutUser', 'comments' => fn($q) => $q->whereNull('parent_id')
-            ->with(['author.aboutUser', 'replies.author.aboutUser'])])->findOrFail($id);
+        $articles = Article::with([
+            'author.aboutUser',
+            'category',
+            'tags',
+            'comments' => fn($q) => $q
+                ->whereNull('parent_id')
+                ->with([
+                    'author.aboutUser',
+                    'replies.author.aboutUser',
+                ]),
+        ])->findOrFail($id);
+
         $articles->increment('views_count');
+
         return view('articles.articles-show', compact('articles'));
     }
 

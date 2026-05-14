@@ -7,6 +7,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class AdminActionsWidget extends StatsOverviewWidget
 {
+
     protected function getStats(): array
     {
         return [

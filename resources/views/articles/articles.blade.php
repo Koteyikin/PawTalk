@@ -199,11 +199,12 @@
     {{-- ══════════════════════════════ --}}
     {{--  FEATURED ARTICLE              --}}
     {{-- ══════════════════════════════ --}}
-    <div class="bg-base-200 px-6 py-10 border-b border-base-300">
+    @forelse(Article::where('is_featured', 1)->get() as $a)
+    <div    class="bg-base-200 px-6 py-10 border-b border-base-300">
         <div class="max-w-5xl mx-auto">
             <p class="text-xs font-bold uppercase tracking-[0.14em] text-primary mb-5">⭐ Статья недели</p>
 
-            <a href="#"
+            <a href="{{ route('articles.show', $a->id) }}"
                class="card bg-neutral overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group">
                 <div class="relative min-h-64 md:min-h-80">
                     {{-- Placeholder image via gradient --}}
@@ -219,37 +220,37 @@
                     <div class="featured-overlay absolute inset-0"></div>
 
                     {{-- Content over image --}}
+
                     <div class="absolute bottom-0 left-0 right-0 p-8 z-10">
                         <div class="flex items-center gap-3 mb-4 flex-wrap">
-                            <div class="badge badge-primary text-white border-none text-xs font-bold">Питание</div>
-                            <div class="badge bg-white/15 text-white border-none text-xs">15 мин чтения</div>
+                            @foreach($a->tags as $s)
+                                <div class="badge badge-primary text-white border-none text-xs font-bold">{{ $s->name }}</div>
+                            @endforeach
+                            <div class="badge bg-white/15 text-white border-none text-xs">{{ $a->reading_time }} мин. чтения</div>
                         </div>
-                        <h2 class="font-display text-2xl md:text-3xl font-bold text-white leading-tight mb-3
-                               group-hover:text-info transition-colors">
-                            Полное руководство по питанию собак: от щенка до пожилого пса
+                        <h2 class="font-display text-2xl md:text-3xl font-bold text-white leading-tight mb-3 group-hover:text-info transition-colors">
+                            {{ $a->title }}
                         </h2>
                         <p class="text-white/65 text-sm leading-relaxed mb-5 max-w-2xl line-clamp-2">
-                            Исчерпывающее руководство, которое охватывает все этапы жизни вашей собаки. Узнайте,
-                            как правильно кормить щенка, взрослого пса и пожилую собаку, какие продукты под запретом
-                            и как читать состав корма.
+                            {{ $a->excerpt }}
                         </p>
                         <div class="flex items-center gap-4 flex-wrap">
                             <div class="flex items-center gap-2">
                                 <div class="avatar placeholder">
                                     <div
                                         class="w-9 h-9 rounded-full bg-primary text-white text-sm font-bold flex items-center justify-center">
-                                        МС
+                                        {{ $a?->author->aboutUser->avatar ? asset('storage/' . $a->author->aboutUser->avatar) : 'https://api.dicebear.com/9.x/adventurer/svg?seed=' . auth()->user()->nickname }}
                                     </div>
                                 </div>
                                 <div>
-                                    <div class="text-white text-sm font-semibold">Михаил Семёнов</div>
-                                    <div class="text-white/40 text-xs">14 апреля 2025</div>
+                                    <div class="text-white text-sm font-semibold">{{ $a->author->aboutUser->name }} {{ $a->author->aboutUser->surname }}</div>
+                                    <div class="text-white/40 text-xs">{{ $a->created_at }}</div>
                                 </div>
                             </div>
                             <div class="flex items-center gap-4 ml-auto text-white/50 text-xs">
-                                <span>❤️ 312</span>
-                                <span>💬 87</span>
-                                <span>👁 14.2K</span>
+                                <span>❤️ {{ $a->likes()->count() }}</span>
+                                <span>💬 {{ $a->comments_count }}</span>
+                                <span>👁 {{ $a->views_count }}</span>
                             </div>
                         </div>
                     </div>
@@ -257,6 +258,9 @@
             </a>
         </div>
     </div>
+    @empty
+        <div class="text-center">Еще никто не добавил никакой статьи</div>
+    @endforelse
 
 
     {{-- ══════════════════════════════ --}}
@@ -266,23 +270,29 @@
         <div class="max-w-5xl mx-auto flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
 
             {{-- Category filters --}}
-            <div class="flex gap-2 flex-wrap">
-                <button
-                    class="badge badge-outline filter-active cursor-pointer px-4 py-3 text-xs font-semibold transition-all">
+            <div class="w-full flex gap-2 overflow-x-auto pb-1
+            [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                {{-- Кнопка "Все" --}}
+                <a href="{{ request()->fullUrlWithQuery(['category' => null]) }}"
+                   class="badge cursor-pointer px-4 py-3 text-xs font-semibold transition-all flex-shrink-0
+              {{ !$categoryId ? 'badge-primary text-white' : 'badge-ghost hover:badge-primary' }}">
                     Все
-                </button>
-                @foreach(Tag::all() as $tag)
-                    <button
-                        class="badge badge-ghost cursor-pointer px-4 py-3 text-xs font-semibold hover:badge-primary transition-all">{{ $tag->name }}</button>
+                </a>
+                @foreach(\App\Models\Category::all() as $c)
+                    <a href="{{ request()->fullUrlWithQuery(['category' => $c->id]) }}"
+                       class="badge cursor-pointer px-4 py-3 text-xs font-semibold transition-all flex-shrink-0
+                  {{ $categoryId == $c->id ? 'badge-primary text-white' : 'badge-ghost hover:badge-primary' }}">
+                        {{ $c->name }}
+                    </a>
                 @endforeach
             </div>
 
             {{-- Search --}}
             <div class="relative flex-shrink-0">
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/30 text-sm">🔍</span>
-                <input type="text" placeholder="Поиск статей..."
-                       class="search-input input input-sm bg-base-100 border border-base-300 rounded-full pl-9 pr-4 w-56
-                          text-sm transition-all"/>
+                <form method="GET" action="{{ route('articles.search') }}" class="relative flex-shrink-0">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-base-content/30 text-sm">🔍</span>
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Поиск статей..." class="search-input input input-sm bg-base-100 border border-base-300 rounded-full pl-9 pr-4 w-56 text-sm transition-all"/>
+                </form>
             </div>
         </div>
     </div>
@@ -291,12 +301,7 @@
     <section class="py-12 px-6 bg-base-100">
         <div class="max-w-5xl mx-auto">
 
-            <div class="flex items-center justify-between mb-8">
-                <p class="text-sm text-base-content/50">
-                    @foreach(\App\Models\SiteStat::all() as $stat)
-                        Найдено <span class="font-semibold text-base-content">{{ $stat->articles_views }}</span> статей
-                    @endforeach
-                </p>
+            <div class="flex justify-center mb-8">
                 <div class="flex gap-2">
                     <a href="{{ request()->fullUrlWithQuery(['sort' => 'new']) }}"
                        class="btn btn-sm rounded-full {{ $sort === 'new' ? 'btn-primary text-white' : 'btn-ghost border border-base-300' }}">
@@ -316,7 +321,7 @@
 
             <div class="flex flex-col gap-5">
             {{--Article--}}
-                @forelse($article as $s)
+                @forelse($articles as $s)
 
                     <a href="{{ route('articles.show', $s->id) }}"
                        class="card bg-base-200 border border-base-300 overflow-hidden article-card
@@ -333,16 +338,30 @@
                             <div class="w-36 md:w-48 flex-shrink-0 relative overflow-hidden"
                                  style="background: linear-gradient(135deg, #eef3ff 0%, #dce8ff 100%);">
                                 <span
-                                    class="absolute inset-0 flex items-center justify-center text-5xl opacity-30">🐱</span>
+                                    class="absolute inset-0 flex items-center justify-center text-5xl">
+                                     @if($s->image)
+                                        <img src="{{ asset('storage/' . $s->image) }}"
+                                             alt="{{ $s->title }}"
+                                             class="w-full h-full object-cover"
+                                             onerror="this.parentElement.style.background='linear-gradient(135deg,#fef9ed,#fdedc5)'">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center text-5xl"
+                                             style="background: linear-gradient(135deg,#eef3ff,#dce8ff);">
+                                    {{ $s->category?->icon ?? '📰' }}
+                                </div>
+                                    @endif
+                                </span>
                             </div>
 
                             {{-- Content --}}
                             <div class="flex-1 p-5 flex flex-col gap-2">
                                 <div class="flex items-center gap-2 flex-wrap">
                                     <div class="badge badge-soft badge-primary text-xs font-bold">
-                                        @foreach($s->tags as $tag)
-                                            <span>{{ $tag->name }}</span>
-                                        @endforeach
+                                        @if($s->category)
+                                            <span class="badge badge-soft badge-primary text-xs font-bold">
+                                                {{ $s->category->name }}
+                                            </span>
+                                        @endif
                                     </div>
                                     <span class="text-xs text-base-content/40">{{ $s->reading_time }} мин чтения</span>
                                     <span class="text-xs text-base-content/40 ml-auto">2 часа назад</span>
@@ -375,58 +394,10 @@
                 @empty
                     <div class="text-center">Еще никто не добавил никакой статьи</div>
                 @endforelse
-            </div>{{-- end articles list --}}
-
-
-            {{-- ══════════════════════════════ --}}
-            {{--  PAGINATION                    --}}
-            {{-- ══════════════════════════════ --}}
-            {{--
-                В реальном проекте замените этот блок на:
-                {{ $articles->links('vendor.pagination.petspace') }}
-                или стандартный: {{ $articles->links() }}
-            --}}
-            <div class="flex justify-center items-center gap-2 mt-14 flex-wrap">
-
-                {{-- Prev --}}
-                <a href="#" class="btn btn-sm btn-ghost rounded-full border border-base-300 text-base-content/50
-                               hover:border-primary hover:text-primary transition-all">
-                    ← Назад
-                </a>
-
-                {{-- Pages --}}
-                <a href="#" class="btn btn-sm rounded-full border border-base-300 text-base-content/60
-                               hover:border-primary hover:text-primary transition-all">1</a>
-
-                <a href="#" class="btn btn-sm rounded-full border-none text-white shadow-md transition-all"
-                   style="background:#4976F0;">2</a>
-
-                <a href="#" class="btn btn-sm rounded-full border border-base-300 text-base-content/60
-                               hover:border-primary hover:text-primary transition-all">3</a>
-
-                <a href="#" class="btn btn-sm rounded-full border border-base-300 text-base-content/60
-                               hover:border-primary hover:text-primary transition-all">4</a>
-
-                <a href="#" class="btn btn-sm rounded-full border border-base-300 text-base-content/60
-                               hover:border-primary hover:text-primary transition-all">5</a>
-
-                <span
-                    class="btn btn-sm btn-ghost rounded-full border border-base-300 cursor-default text-base-content/30">…</span>
-
-                <a href="#" class="btn btn-sm rounded-full border border-base-300 text-base-content/60
-                               hover:border-primary hover:text-primary transition-all">47</a>
-
-                {{-- Next --}}
-                <a href="#" class="btn btn-sm btn-ghost rounded-full border border-base-300 text-base-content/50
-                               hover:border-primary hover:text-primary transition-all">
-                    Вперёд →
-                </a>
             </div>
-
-            {{-- Page info --}}
-            <p class="text-center text-xs text-base-content/35 mt-4">
-                Страница 2 из 47 · Показано 6 из 5 234 статей
-            </p>
+            <div class="mt-10">
+                {{ $articles->links() }}
+            </div>
 
         </div>
     </section>
@@ -437,7 +408,7 @@
     {{-- ══════════════════════════════ --}}
     <footer class="py-6 px-10 bg-neutral">
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
-            <span class="font-display text-xl text-white/60">🐾 PetSpace</span>
+            <span class="font-display text-xl text-white/60">🐾 PawTalk</span>
             <p class="text-white/30 text-xs">© 2025 PetSpace. Все права защищены.</p>
             <div class="flex gap-4 text-xs text-white/30">
                 <a href="#" class="hover:text-white/60 transition-colors">Политика конф.</a>

@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Observers\ArticleObserver;
 use App\Observers\CommentObserver;
 use App\Observers\UserObserver;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Paginator::useTailwind();
         comments::observe(CommentObserver::class);
         User::observe(UserObserver::class);
         Article::observe(ArticleObserver::class);

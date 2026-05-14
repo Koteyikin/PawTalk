@@ -130,7 +130,7 @@
     {{-- ══════════════════════════════ --}}
     {{--  ARTICLE HERO                  --}}
     {{-- ══════════════════════════════ --}}
-    <div class="relative overflow-hidden" style="background-color: var(--custom); min-height: 420px;">
+    <div class="relative overflow-visible" style="background-color: var(--custom); min-height: 420px;">
         {{-- BG --}}
         <div class="absolute inset-0 pointer-events-none"
              style="background: radial-gradient(ellipse 60% 80% at 15% 60%, rgba(73,118,240,0.22) 0%, transparent 70%),
@@ -138,7 +138,7 @@
         </div>
         <span class="absolute text-[10rem] opacity-[0.035] right-10 top-0 rotate-6 pointer-events-none">🐱</span>
 
-        <div class="max-w-3xl mx-auto px-6 py-16 relative z-10 animate-in">
+        <div class="max-w-3xl mx-auto px-6 pt-20 pb-16 relative z-10 animate-in">
 
             {{-- Breadcrumbs --}}
             <div class="breadcrumbs text-xs text-white/40 mb-6">
@@ -248,12 +248,12 @@
                             ❤️ <span class="like-count">{{ $articles->likes()->count() }}</span>
                         </button>
                         @auth
-                            <button id="bookmark-btn" onclick="toggleBookmark({{ $articles->id }})" class="btn btn-sm rounded-full gap-2 transition-all
-                                {{ \App\Models\Bookmarks::where('user_id', auth()->id())->where('article_id', $articles->id)->exists() ? 'btn-warning text-white border-none' : 'btn-outline border-base-300 text-base-content/50' }}">
-                                🔖 <span id="bookmark-label">
-                                {{ \App\Models\Bookmarks::where('user_id', auth()->id())->where('article_id', $articles->id)->exists() ? 'В избранном' : 'В избранное' }}
-                                    </span>
-                            </button>
+{{--                            <button id="bookmark-btn" onclick="toggleBookmark({{ $articles->id }})" class="btn btn-sm rounded-full gap-2 transition-all--}}
+{{--                                {{ \App\Models\Bookmarks::where('user_id', auth()->id())->where('article_id', $articles->id)->exists() ? 'btn-warning text-white border-none' : 'btn-outline border-base-300 text-base-content/50' }}">--}}
+{{--                                🔖 <span id="bookmark-label">--}}
+{{--                                {{ \App\Models\Bookmarks::where('user_id', auth()->id())->where('article_id', $articles->id)->exists() ? 'В избранном' : 'В избранное' }}--}}
+{{--                                    </span>--}}
+{{--                            </button>--}}
                             <script>
                                 async function toggleBookmark(articleId) {
                                     const btn   = document.getElementById('bookmark-btn')
@@ -296,7 +296,7 @@
                                 <div class="text-xs font-bold uppercase tracking-widest text-base-content/40 mb-1">Об авторе</div>
                                 <div class="font-display font-bold text-lg text-neutral">{{ $articles->author->aboutUser->name ?? 'Анонимный' }} {{  $articles->author->aboutUser->surname ?? 'автор' }}</div>
                                 <p class="text-sm text-base-content/60 leading-relaxed mt-1">
-                                    {{  $articles->author->aboutUser->descrition ?? 'Автор решил остаться анонимным'  }}
+                                    {{  $articles->author->aboutUser->description ?? 'Автор решил остаться анонимным'  }}
                                 </p>
                             </div>
                         </div>
@@ -424,10 +424,6 @@
                                 </div>
                             </div>
                         @endforeach
-
-                        <button class="btn btn-ghost btn-sm rounded-full border border-base-300 text-base-content/50 hover:border-primary hover:text-primary mt-2 transition-all">
-                            Показать ещё 10 комментариев
-                        </button>
                     </div>
                 </article>
 
@@ -463,47 +459,37 @@
                         <div class="card-body p-5 gap-3">
                             <h5 class="text-xs font-bold uppercase tracking-[0.1em] text-base-content/40">Поделиться</h5>
                             <div class="flex gap-2">
-                                <button class="btn btn-sm flex-1 rounded-full bg-blue-500 text-white border-none hover:bg-blue-600 text-xs">VK</button>
-                                <button class="btn btn-sm flex-1 rounded-full bg-sky-400 text-white border-none hover:bg-sky-500 text-xs">TG</button>
-                                <button class="btn btn-sm flex-1 rounded-full bg-base-300 text-base-content border-none hover:bg-base-300 text-xs">🔗</button>
+
+                                {{-- VK --}}
+                                <a href="https://vk.com/share.php?url={{ urlencode(request()->fullUrl()) }}&title={{ urlencode($articles->title) }}"
+                                   target="_blank"
+                                   class="btn btn-sm flex-1 rounded-full bg-blue-500 text-white border-none hover:bg-blue-600 text-xs">
+                                    VK
+                                </a>
+                                {{-- Telegram --}}
+                                <a href="https://t.me/share/url?url={{ urlencode(request()->fullUrl()) }}&text={{ urlencode($articles->title) }}"
+                                   target="_blank"
+                                   class="btn btn-sm flex-1 rounded-full bg-sky-400 text-white border-none hover:bg-sky-500 text-xs">
+                                    TG
+                                </a>
+
                             </div>
                         </div>
                     </div>
 
-                    {{-- Related articles --}}
-                    <div class="card bg-base-200 border border-base-300">
-                        <div class="card-body p-5 gap-4">
-                            <h5 class="text-xs font-bold uppercase tracking-[0.1em] text-base-content/40">Похожие статьи</h5>
-                            <div class="divider my-0"></div>
-
-                            <a href="#"
-                               class="flex gap-3 group items-start">
-                                <div class="w-14 h-14 rounded-xl flex-shrink-0 flex items-center justify-center text-2xl"
-                                     style="background: linear-gradient(135deg,#e6faf3,#c5f0e1);">🐰</div>
-                                <div>
-                                    <p class="text-xs font-semibold text-neutral leading-snug group-hover:text-primary transition-colors line-clamp-2">
-                                        5 признаков того, что вашему кролику нужна срочная помощь
-                                    </p>
-                                    <p class="text-xs text-base-content/40 mt-1">7 мин · 61 ❤️</p>
-                                </div>
-                            </a>
-
-                            <div class="divider my-0"></div>
-
-                            <a href="#"
-                               class="flex gap-3 group items-start">
-                                <div class="w-14 h-14 rounded-xl flex-shrink-0 flex items-center justify-center text-2xl"
-                                     style="background: linear-gradient(135deg,#e8f5f8,#c8e8ef);">🐶</div>
-                                <div>
-                                    <p class="text-xs font-semibold text-neutral leading-snug group-hover:text-primary transition-colors line-clamp-2">
-                                        Сырое питание для собак: мифы и реальность
-                                    </p>
-                                    <p class="text-xs text-base-content/40 mt-1">12 мин · 93 ❤️</p>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-
+                    <script>
+                        function copyLink(btn) {
+                            navigator.clipboard.writeText(window.location.href).then(() => {
+                                const original = btn.innerHTML
+                                btn.innerHTML = '✅'
+                                btn.classList.add('bg-success', 'text-white')
+                                setTimeout(() => {
+                                    btn.innerHTML = original
+                                    btn.classList.remove('bg-success', 'text-white')
+                                }, 2000)
+                            })
+                        }
+                    </script>
                 </aside>
             </div>
         </div>
@@ -521,17 +507,29 @@
                    class="btn btn-sm btn-outline btn-primary rounded-full">Все статьи →</a>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                @foreach(\App\Models\Article::all() as $s)
+                @foreach(\App\Models\Article::latest()->take(3)->get() as $s)
                     <a href="{{ route('articles.show', $s->id) }}"
                        class="card bg-base-100 border border-base-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-250 group">
                         <div class="h-32 rounded-t-2xl flex items-center justify-center text-5xl"
-                             style="background: linear-gradient(135deg,#fef9ed,#fdedc5);">🦜</div>
+                             style="background: linear-gradient(135deg,#fef9ed,#fdedc5);">
+                            @if($s->image)
+                                <img src="{{ asset('storage/' . $s->image) }}"
+                                     alt="{{ $s->title }}"
+                                     class="w-full h-full object-cover"
+                                     onerror="this.parentElement.style.background='linear-gradient(135deg,#fef9ed,#fdedc5)'">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-5xl"
+                                     style="background: linear-gradient(135deg,#eef3ff,#dce8ff);">
+                                    {{ $s->category?->icon ?? '📰' }}
+                                </div>
+                            @endif
+                        </div>
                         <div class="card-body p-5 gap-2">
                             <div class="badge badge-soft badge-warning text-xs w-fit">🦜 {{ $s->category->name }}</div>
                             <h4 class="font-display font-bold text-base text-neutral group-hover:text-primary transition-colors line-clamp-2 leading-snug">
                                 {{ $s->title }}
                             </h4>
-                            <p class="text-xs text-base-content/40">{{ $s->reding_time }} · 74 ❤️</p>
+                            <p class="text-xs text-base-content/40">{{ $s->reding_time }} · {{$s->likes()->count()}} ❤️</p>
                         </div>
                     </a>
                 @endforeach
@@ -546,7 +544,7 @@
     {{-- ══════════════════════════════ --}}
     <footer class="py-6 px-10 bg-neutral">
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
-            <span class="font-display text-xl text-white/60">🐾 PetSpace</span>
+            <span class="font-display text-xl text-white/60">🐾 PawTalk</span>
             <p class="text-white/30 text-xs">© 2025 PetSpace. Все права защищены.</p>
             <div class="flex gap-4 text-xs text-white/30">
                 <a href="#" class="hover:text-white/60 transition-colors">Политика конф.</a>
@@ -645,6 +643,17 @@
                 })
             })
         })
+        function copyLink(btn) {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const original = btn.innerHTML
+                btn.innerHTML = '✅'
+                btn.classList.add('bg-success', 'text-white')
+                setTimeout(() => {
+                    btn.innerHTML = original
+                    btn.classList.remove('bg-success', 'text-white')
+                }, 2000)
+            })
+        }
     </script>
 
 @endsection

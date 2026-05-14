@@ -1,8 +1,8 @@
 @extends('layouts.main')
 @section('title', 'Профиль')
 @section('body')
-<div class="min-h-screen bg-[#f4f7fb]">
-    <div class="max-w-6xl mx-auto px-4 pb-12">
+<div class="min-h-screen bg-[#f4f7fb] flex justify-center py-8 px-4">
+    <div class="w-full max-w-4xl">
         <!-- Карточка профиля с аватаркой и обложкой в стиле daisyUI -->
         <div class="rounded-box bg-base-100 shadow-xl overflow-hidden" style="background-color: var(--color-base-100, oklch(100% 0 0)); --color-base-100: oklch(100% 0 0);">
             <!-- Шапка профиля с обложкой -->
@@ -124,13 +124,27 @@
                             <div class="card bg-base-200 rounded-box p-5 text-center" style="background: oklch(96% 0.003 264.542);">
                                 <div class="stat">
                                     <div class="stat-title">Статьи</div>
-                                    <div class="stat-value text-primary" style="color: #4976F0;">24</div>
-                                    <div class="stat-desc">за последний год</div>
+                                    <div class="stat-value text-primary" style="color: #4976F0;">
+                                        {{ auth()->user()->articles()->count() }}
+                                    </div>
+                                    <div class="stat-desc">всего статей</div>
                                 </div>
                                 <div class="stat">
                                     <div class="stat-title">Просмотры</div>
-                                    <div class="stat-value text-accent" style="color: #4E8EA2;">12.4K</div>
-                                    <div class="stat-desc">⭐ 98% позитивных</div>
+                                    <div class="stat-value text-accent" style="color: #4E8EA2;">
+                                        @php
+                                            $views = auth()->user()->articles()->sum('views_count');
+                                        @endphp
+                                        {{ $views >= 1000 ? round($views / 1000, 1) . 'K' : $views }}
+                                    </div>
+                                    <div class="stat-desc">суммарно по всем статьям</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-title">Комментарии</div>
+                                    <div class="stat-value" style="color: #545871;">
+                                        {{ auth()->user()->comments()->count() }}
+                                    </div>
+                                    <div class="stat-desc">оставлено комментариев</div>
                                 </div>
                             </div>
                             <button id="openModalBtn" class="btn w-full" style="background: #4976F0; color: white; border: none; padding: 12px 24px; border-radius: 1rem;">
@@ -226,9 +240,9 @@
 
                         @php
                             $myArticles = \App\Models\Article::where('user_id', auth()->id())
-                                            ->with('category')
+                                            ->with('category', 'comments')
                                             ->latest()
-                                            ->get();
+                                            ->paginate(5, ['*'], 'articles_page'); // 'articles_page' — уникальное имя параметра
                         @endphp
 
                         @if($myArticles->isEmpty())
@@ -236,50 +250,46 @@
                         @else
                             <div class="flex flex-col gap-4">
                                 @foreach($myArticles as $article)
-                                    <div class="card bg-white border border-[#e8eaf0] rounded-2xl p-5
-                                hover:shadow-md transition-all">
+                                    <div class="card bg-white border border-[#e8eaf0] rounded-2xl p-5 hover:shadow-md transition-all">
                                         <div class="flex items-start justify-between gap-4 flex-wrap">
                                             <div class="flex-1">
                                                 <div class="flex items-center gap-2 mb-2 flex-wrap">
+
                                                     {{-- Статус --}}
                                                     <span class="badge text-xs font-bold
-                                        {{ match($article->status) {
-                                            'published' => 'bg-green-100 text-green-700 border-green-200',
-                                            'pending'   => 'bg-yellow-100 text-yellow-700 border-yellow-200',
-                                            'draft'     => 'bg-gray-100 text-gray-600 border-gray-200',
-                                            'rejected'  => 'bg-red-100 text-red-600 border-red-200',
-                                            default     => 'bg-gray-100 text-gray-600',
-                                        } }}">
-                                        {{ match($article->status) {
-                                            'published' => '✅ Опубликована',
-                                            'pending'   => '⏳ На проверке',
-                                            'draft'     => '📝 Черновик',
-                                            'rejected'  => '❌ Отклонена',
-                                            default     => $article->status,
-                                        } }}
-                                    </span>
+                                                        {{ match($article->status) {
+                                                            'published' => 'bg-green-100 text-green-700 border-green-200',
+                                                            'pending'   => 'bg-yellow-100 text-yellow-700 border-yellow-200',
+                                                            'draft'     => 'bg-gray-100 text-gray-600 border-gray-200',
+                                                            'rejected'  => 'bg-red-100 text-red-600 border-red-200',
+                                                            default     => 'bg-gray-100 text-gray-600',
+                                                        } }}">
+                                                        {{ match($article->status) {
+                                                            'published' => '✅ Опубликована',
+                                                            'pending'   => '⏳ На проверке',
+                                                            'draft'     => '📝 Черновик',
+                                                            'rejected'  => '❌ Отклонена',
+                                                            default     => $article->status,
+                                                        } }}
+                                                    </span>
 
                                                     {{-- Категория --}}
                                                     @if($article->category)
-                                                        <span class="badge badge-outline text-xs"
-                                                              style="border-color: #4976F0; color: #4976F0;">
-                                            {{ $article->category->name }}
-                                        </span>
+                                                        <span class="badge badge-outline text-xs" style="border-color: #4976F0; color: #4976F0;">
+                                                        {{ $article->category->name }}
+                                                        </span>
                                                     @endif
-
                                                     <span class="text-xs text-gray-400">
-                                        {{ $article->created_at->diffForHumans() }}
-                                    </span>
+                                                        {{ $article->created_at->diffForHumans() }}
+                                                    </span>
                                                 </div>
 
                                                 <h3 class="font-bold text-base text-[#1a1d23] mb-1">
                                                     {{ $article->title }}
                                                 </h3>
-
                                                 <p class="text-sm text-gray-500 line-clamp-2">
                                                     {{ $article->excerpt }}
                                                 </p>
-
                                                 {{-- Причина отказа --}}
                                                 @if(in_array($article->status, ['rejected', 'draft']) && $article->reject_reason)
                                                     <div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-xl">
@@ -309,87 +319,127 @@
                                     </div>
                                 @endforeach
                             </div>
+                            {{-- Пагинация --}}
+                            @if($myArticles->hasPages())
+                                <div class="flex justify-center items-center gap-2 mt-6 flex-wrap">
+                                    {{-- Назад --}}
+                                    @if($myArticles->onFirstPage())
+                                        <span class="btn btn-sm btn-ghost rounded-full border border-base-300 text-base-content/30 cursor-not-allowed">← Назад</span>
+                                    @else
+                                        <a href="{{ $myArticles->previousPageUrl() }}#profileTab"
+                                           class="btn btn-sm btn-ghost rounded-full border border-base-300 text-base-content/50 hover:border-primary hover:text-primary transition-all">
+                                            ← Назад
+                                        </a>
+                                    @endif
+                                    {{-- Страницы --}}
+                                    @foreach($myArticles->getUrlRange(1, $myArticles->lastPage()) as $page => $url)
+                                        <a href="{{ $url }}#profileTab"
+                                           class="btn btn-sm rounded-full border transition-all
+                                            {{ $page == $myArticles->currentPage() ? 'border-none text-white shadow-md' : 'border-base-300 text-base-content/60 hover:border-primary hover:text-primary' }}"
+                                           @if($page == $myArticles->currentPage())
+                                               style="background: #4976F0;"
+                                            @endif>
+                                            {{ $page }}
+                                        </a>
+                                    @endforeach
+                                    {{-- Вперёд --}}
+                                    @if($myArticles->hasMorePages())
+                                        <a href="{{ $myArticles->nextPageUrl() }}#profileTab"
+                                           class="btn btn-sm btn-ghost rounded-full border border-base-300 text-base-content/50 hover:border-primary hover:text-primary transition-all">
+                                            Вперёд →
+                                        </a>
+                                    @else
+                                        <span class="btn btn-sm btn-ghost rounded-full border border-base-300 text-base-content/30 cursor-not-allowed">Вперёд →</span>
+                                    @endif
+                                </div>
+                                <p class="text-center text-xs text-base-content/35 mt-2">
+                                    Страница {{ $myArticles->currentPage() }} из {{ $myArticles->lastPage() }}
+                                    · {{ $myArticles->total() }} статей
+                                </p>
+                            @endif
                         @endif
                     </div>
                 </div>
                 {{-- Вкладка 5: Избранное --}}
-                <input type="radio" name="my_tabs_6" class="tab" aria-label="Избранное" />
-                <div class="tab-content bg-base-100 border-base-300 p-6">
-                    <div class="max-w-3xl mx-auto">
-                        <h2 class="text-lg font-bold text-[#1a1d23] mb-5">Избранные статьи</h2>
+{{--                <input type="radio" name="my_tabs_6" class="tab" aria-label="Избранное" />--}}
+{{--                <div class="tab-content bg-base-100 border-base-300 p-6">--}}
+{{--                    <div class="max-w-3xl mx-auto">--}}
+{{--                        <h2 class="text-lg font-bold text-[#1a1d23] mb-5">Избранные статьи</h2>--}}
 
-                        @php
-                            $bookmarks = \App\Models\Bookmarks::where('user_id', auth()->id())
-                                            ->with(['article.author.aboutUser', 'article.category'])
-                                            ->latest()
-                                            ->get();
-                        @endphp
+{{--                        @php--}}
+{{--                            $bookmarks = \App\Models\Bookmarks::where('user_id', auth()->id())--}}
+{{--                                            ->with(['article.author.aboutUser', 'article.category'])--}}
+{{--                                            ->latest()--}}
+{{--                                            ->get();--}}
+{{--                        @endphp--}}
 
-                        @if($bookmarks->isEmpty())
-                            <div class="alert">Вы ещё не добавили статьи в избранное</div>
-                        @else
-                            <div class="flex flex-col gap-4">
-                                @foreach($bookmarks as $bookmark)
-                                    @php $article = $bookmark->article; @endphp
-                                    @if($article)
-                                        <div class="card bg-white border border-[#e8eaf0] rounded-2xl overflow-hidden
-                                    hover:shadow-lg hover:border-[#c5d2f8] transition-all flex flex-row">
+{{--                        @if($bookmarks->isEmpty())--}}
+{{--                            <div class="alert">Вы ещё не добавили статьи в избранное</div>--}}
+{{--                        @else--}}
+{{--                            <div class="flex flex-col gap-4">--}}
+{{--                                @foreach($bookmarks as $bookmark)--}}
+{{--                                    @php $article = $bookmark->article; @endphp--}}
+{{--                                    @if($article)--}}
+{{--                                        <div class="card bg-white border border-[#e8eaf0] rounded-2xl overflow-hidden--}}
+{{--                                    hover:shadow-lg hover:border-[#c5d2f8] transition-all flex flex-row">--}}
 
-                                            <div class="flex-1 p-5">
-                                                <div class="flex items-center gap-2 mb-2 flex-wrap">
-                                                    @if($article->category)
-                                                        <span class="badge text-xs font-bold"
-                                                              style="background: #eef3ff; color: #4976F0; border-color: #c5d2f8;">
-                                            {{ $article->category->name }}
-                                        </span>
-                                                    @endif
-                                                    <span class="text-xs text-gray-400">
-                                        {{ $article->created_at->diffForHumans() }}
-                                    </span>
-                                                </div>
+{{--                                            <div class="flex-1 p-5">--}}
+{{--                                                <div class="flex items-center gap-2 mb-2 flex-wrap">--}}
+{{--                                                    @if($article->category)--}}
+{{--                                                        <span class="badge text-xs font-bold"--}}
+{{--                                                              style="background: #eef3ff; color: #4976F0; border-color: #c5d2f8;">--}}
+{{--                                            {{ $article->category->name }}--}}
+{{--                                        </span>--}}
+{{--                                                    @endif--}}
+{{--                                                    <span class="text-xs text-gray-400">--}}
+{{--                                        {{ $article->created_at->diffForHumans() }}--}}
+{{--                                    </span>--}}
+{{--                                                </div>--}}
 
-                                                <h3 class="font-bold text-base text-[#1a1d23] mb-1 line-clamp-1">
-                                                    {{ $article->title }}
-                                                </h3>
+{{--                                                <h3 class="font-bold text-base text-[#1a1d23] mb-1 line-clamp-1">--}}
+{{--                                                    {{ $article->title }}--}}
+{{--                                                </h3>--}}
 
-                                                <p class="text-sm text-gray-500 line-clamp-2 mb-3">
-                                                    {{ $article->excerpt }}
-                                                </p>
+{{--                                                <p class="text-sm text-gray-500 line-clamp-2 mb-3">--}}
+{{--                                                    {{ $article->excerpt }}--}}
+{{--                                                </p>--}}
 
-                                                <div class="flex items-center justify-between">
-                                                    <div class="flex items-center gap-2">
-                                                        <div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold"
-                                                             style="background: #4976F0;">
-                                                            {{ mb_strtoupper(mb_substr($article->author->aboutUser->name ?? 'А', 0, 1)) }}
-                                                        </div>
-                                                        <span class="text-xs text-gray-500">
-                                            {{ $article->author->aboutUser->name ?? '—' }}
-                                        </span>
-                                                    </div>
+{{--                                                <div class="flex items-center justify-between">--}}
+{{--                                                    <div class="flex items-center gap-2">--}}
+{{--                                                        <div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold"--}}
+{{--                                                             style="background: #4976F0;">--}}
+{{--                                                            {{ mb_strtoupper(mb_substr($article->author->aboutUser->name ?? 'А', 0, 1)) }}--}}
+{{--                                                        </div>--}}
+{{--                                                        <span class="text-xs text-gray-500">--}}
+{{--                                            {{ $article->author->aboutUser->name ?? '—' }}--}}
+{{--                                        </span>--}}
+{{--                                                    </div>--}}
 
-                                                    <div class="flex items-center gap-3">
-                                                        <span class="text-xs text-gray-400">👁 {{ $article->views_count }}</span>
+{{--                                                    <div class="flex items-center gap-3">--}}
+{{--                                                        <span class="text-xs text-gray-400">👁 {{ $article->views_count }}</span>--}}
 
-                                                        <a href="{{ route('articles.show', $article->id) }}"
-                                                           class="btn btn-xs rounded-full text-white border-none"
-                                                           style="background: #4976F0;">
-                                                            Читать →
-                                                        </a>
+{{--                                                        <a href="{{ route('articles.show', $article->id) }}"--}}
+{{--                                                           class="btn btn-xs rounded-full text-white border-none"--}}
+{{--                                                           style="background: #4976F0;">--}}
+{{--                                                            Читать →--}}
+{{--                                                        </a>--}}
 
-                                                        {{-- Убрать из избранного --}}
-                                                        <button onclick="toggleBookmark({{ $article->id }}, this)"
-                                                                class="btn btn-xs btn-ghost text-red-400 hover:bg-red-50 rounded-lg">
-                                                            🗑
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endif
-                                @endforeach
-                            </div>
-                        @endif
-                    </div>
-                </div>
+{{--                                                        --}}{{-- Убрать из избранного --}}
+{{--                                                        <button onclick="toggleBookmark({{ $article->id }}, this)"--}}
+{{--                                                                class="btn btn-xs btn-ghost text-red-400 hover:bg-red-50 rounded-lg">--}}
+{{--                                                            🗑--}}
+{{--                                                        </button>--}}
+{{--                                                    </div>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                    @endif--}}
+{{--                                @endforeach--}}
+{{--                            </div>--}}
+{{--                        @endif--}}
+{{--                    </div>--}}
+{{--                </div>--}}
             </div>
+        </div>
+    </div>
 @endsection

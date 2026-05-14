@@ -7,8 +7,8 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class WebsiteButtonWidget extends StatsOverviewWidget
 {
-    protected static ?int $sort = -2;
-    protected int | string | array $columnSpan = 'full';
+    protected static ?int $sort = 0;
+    protected int | string | array $columnSpan = 1;
     protected static bool $isLazy = false;
     protected function getStats(): array
     {

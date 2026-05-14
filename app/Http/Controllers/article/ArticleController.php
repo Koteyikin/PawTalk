@@ -12,18 +12,33 @@ class ArticleController extends Controller
 {
     public function index(Request $request)
     {
-        $articles = Article::all();
-        $totalViews = Article::sum('views_count');
-        $sort = $request->get('sort', 'new');
-        $article = Article::where('status', 'published')->when($sort === 'new', function ($q) {
-            $q->orderBy('created_at', 'desc');
-        })->when($sort === 'popular', function ($q) {
-            $q->orderBy('views_count', 'desc');
-        })->when($sort === 'comments', function ($q) {
-            $q->orderBy('comments_count', 'desc');
-        })->paginate(5);
-        $user = auth()->user();
-        $profileFull = $user->profileFull();
-        return view('articles.articles', compact('user', 'profileFull', 'articles', 'totalViews', 'article', 'sort'));
+        $search     = $request->input('search');
+        $sort       = $request->get('sort', 'new');
+        $categoryId = $request->get('category'); // ← добавь
+
+        $articles = Article::query()
+            ->where('status', 'published')
+            ->when($categoryId, function ($q) use ($categoryId) {
+                $q->where('category_id', $categoryId); // ← добавь
+            })
+            ->when($sort === 'new', function ($q) {
+                $q->orderBy('created_at', 'desc');
+            })
+            ->when($sort === 'popular', function ($q) {
+                $q->orderBy('views_count', 'desc');
+            })
+            ->when($sort === 'comments', function ($q) {
+                $q->withCount('comments')->orderBy('comments_count', 'desc');
+            })
+            ->paginate(5)
+            ->withQueryString();
+
+        $totalViews  = Article::sum('views_count');
+        $user        = auth()->user();
+        $profileFull = $user?->profileFull();
+
+        return view('articles.articles', compact(
+            'articles', 'totalViews', 'sort', 'user', 'profileFull', 'categoryId'
+        ));
     }
 }
