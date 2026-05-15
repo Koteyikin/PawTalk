@@ -12,6 +12,8 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
+    libcurl4-openssl-dev \
+    libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-install \
@@ -23,6 +25,11 @@ RUN docker-php-ext-install \
     bcmath \
     xml
 
+# Установка PECL extensions
+RUN pecl install raphf \
+    && pecl install pecl_http \
+    && docker-php-ext-enable raphf http
+
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
@@ -32,10 +39,6 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader
 
 RUN npm install && npm run build
-
-RUN cp .env.example .env || true
-
-RUN php artisan key:generate || true
 
 EXPOSE 10000
 
