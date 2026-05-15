@@ -9,13 +9,19 @@ RUN apt-get update && apt-get install -y \
     nodejs \
     npm \
     libicu-dev \
-    libcurl4-openssl-dev
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-install zip intl
-
-PECL_FIX=1 pecl install pecl_http
-
-RUN docker-php-ext-enable http
+RUN docker-php-ext-install \
+    zip \
+    intl \
+    pdo \
+    pdo_mysql \
+    mbstring \
+    bcmath \
+    xml
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
